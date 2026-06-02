@@ -12,7 +12,7 @@ console.log('Supabase client initialized pointing to:', supabaseUrl);
 const initDb = async () => {
   try {
     // Check if users exist in Supabase
-    const { data: users, error } = await supabase.from('users').select('id');
+    const { data: users, error } = await supabase.from('users').select('mobile_number');
     
     if (error) {
       console.error('Error connecting to Supabase tables:', error.message);
@@ -20,84 +20,56 @@ const initDb = async () => {
       return;
     }
 
-    if (users && users.length > 0) {
-      console.log('Cloud Supabase database already has rosters. Skipping seed.');
-      return;
-    }
-
-    console.log('Seeding initial cloud data rosters into Supabase (using Mobile Numbers)...');
-
-    // Generate unique IDs
-    const adminId = crypto.randomUUID();
-    const teacherId = crypto.randomUUID();
-    const studentId = crypto.randomUUID();
-    const studentId2 = crypto.randomUUID();
+    const existingMobiles = users ? users.map(u => u.mobile_number) : [];
 
     const adminHash = await bcrypt.hash('admin123', 10);
     const teacherHash = await bcrypt.hash('teacher123', 10);
     const studentHash = await bcrypt.hash('student123', 10);
 
-    // 1. Seed Users (using mobile_number instead of email)
-    await supabase.from('users').insert([
-      { id: adminId, name: 'System Admin', mobile_number: '9999999999', password_hash: adminHash, role: 'admin' },
-      { id: teacherId, name: 'Prof. Jane Doe', mobile_number: '8888888888', password_hash: teacherHash, role: 'teacher' },
-      { id: studentId, name: 'John Smith', mobile_number: '7777777777', password_hash: studentHash, role: 'student' },
-      { id: studentId2, name: 'Alice Johnson', mobile_number: '7777777778', password_hash: studentHash, role: 'student' }
-    ]);
-    console.log('Seeded demo users (mobile numbers) into cloud.');
+    const adminId = crypto.randomUUID();
+    const teacherId = crypto.randomUUID();
+    const studentId = crypto.randomUUID();
+    const studentId2 = crypto.randomUUID();
 
-    // 2. Seed Batch
-    const batchId = crypto.randomUUID();
-    await supabase.from('batches').insert({
-      id: batchId,
-      batch_name: 'Advanced Calculus & Algebra',
-      teacher_id: teacherId,
-      schedule_description: 'Mon & Wed @ 4:00 PM'
-    });
+    // 1. Seed Admin
+    if (!existingMobiles.includes('9999999999')) {
+      await supabase.from('users').insert({ id: adminId, name: 'System Admin', mobile_number: '9999999999', password_hash: adminHash, role: 'admin' });
+      console.log('Seeded demo admin into cloud.');
+    }
 
-    // 3. Link students
-    await supabase.from('batch_students').insert([
-      { batch_id: batchId, student_id: studentId },
-      { batch_id: batchId, student_id: studentId2 }
-    ]);
-    console.log('Seeded batches & junction links.');
+    // 2. Seed Teacher
+    if (!existingMobiles.includes('8888888888')) {
+      await supabase.from('users').insert({ id: teacherId, name: 'Prof. Jane Doe', mobile_number: '8888888888', password_hash: teacherHash, role: 'teacher' });
+      console.log('Seeded demo teacher into cloud.');
 
-    // 4. Seed Lectures
-    const lectureId1 = crypto.randomUUID();
-    const lectureId2 = crypto.randomUUID();
-    await supabase.from('lectures').insert([
-      { id: lectureId1, batch_id: batchId, date: '2026-05-25', start_time: '16:00:00', end_time: '17:30:00', topic: 'Limits & Continuity Intro' },
-      { id: lectureId2, batch_id: batchId, date: '2026-05-27', start_time: '16:00:00', end_time: '17:30:00', topic: 'Derivatives & Chain Rule' }
-    ]);
+      // Seed a batch for this teacher so the dashboard features are active!
+      const batchId = crypto.randomUUID();
+      await supabase.from('batches').insert({
+        id: batchId,
+        batch_name: 'Advanced Calculus & Algebra',
+        teacher_id: teacherId,
+        schedule_description: 'Mon & Wed @ 4:00 PM'
+      });
 
-    // 5. Seed Attendance
-    await supabase.from('attendance').insert([
-      { id: crypto.randomUUID(), lecture_id: lectureId1, student_id: studentId, status: 'present' },
-      { id: crypto.randomUUID(), lecture_id: lectureId1, student_id: studentId2, status: 'present' },
-      { id: crypto.randomUUID(), lecture_id: lectureId2, student_id: studentId, status: 'present' },
-      { id: crypto.randomUUID(), lecture_id: lectureId2, student_id: studentId2, status: 'absent' }
-    ]);
-    console.log('Seeded lectures & attendance records.');
+      // Seed student entries if they don't exist
+      if (!existingMobiles.includes('7777777777')) {
+        await supabase.from('users').insert({ id: studentId, name: 'John Smith', mobile_number: '7777777777', password_hash: studentHash, role: 'student' });
+        await supabase.from('batch_students').insert({ batch_id: batchId, student_id: studentId });
+        await supabase.from('finances').insert({ id: crypto.randomUUID(), user_id: studentId, type: 'fee', amount_total: 1200.0, amount_paid: 400.0, amount_pending: 800.0, due_date: '2026-06-15', status: 'pending' });
+        console.log('Seeded John Smith student.');
+      }
+      
+      if (!existingMobiles.includes('7777777778')) {
+        await supabase.from('users').insert({ id: studentId2, name: 'Alice Johnson', mobile_number: '7777777778', password_hash: studentHash, role: 'student' });
+        await supabase.from('batch_students').insert({ batch_id: batchId, student_id: studentId2 });
+        console.log('Seeded Alice Johnson student.');
+      }
 
-    // 6. Seed Leaves
-    await supabase.from('leaves').insert({
-      id: crypto.randomUUID(),
-      teacher_id: teacherId,
-      start_date: '2026-06-01',
-      end_date: '2026-06-02',
-      reason: 'Attending academic research seminar.',
-      status: 'pending'
-    });
+      // Seed finance record for teacher
+      await supabase.from('finances').insert({ id: crypto.randomUUID(), user_id: teacherId, type: 'salary', amount_total: 3500.0, amount_paid: 0.0, amount_pending: 3500.0, due_date: '2026-05-31', status: 'pending' });
+    }
 
-    // 7. Seed Finances
-    await supabase.from('finances').insert([
-      { id: crypto.randomUUID(), user_id: studentId, type: 'fee', amount_total: 1200.0, amount_paid: 400.0, amount_pending: 800.0, due_date: '2026-06-15', status: 'pending' },
-      { id: crypto.randomUUID(), user_id: studentId2, type: 'fee', amount_total: 1200.0, amount_paid: 1200.0, amount_pending: 0.0, due_date: '2026-05-20', status: 'paid' },
-      { id: crypto.randomUUID(), user_id: teacherId, type: 'salary', amount_total: 3500.0, amount_paid: 0.0, amount_pending: 3500.0, due_date: '2026-05-31', status: 'pending' }
-    ]);
-
-    console.log('Financial ledger tables populated.');
-    console.log('Cloud database seeding finished successfully!');
+    console.log('Cloud database validation and seeding finished successfully!');
   } catch (error) {
     console.error('Error seeding Cloud Supabase data:', error.message);
   }
