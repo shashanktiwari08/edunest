@@ -188,19 +188,49 @@ export default function FeaturesSection() {
           position: 'absolute',
           inset: 0,
           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
+          backgroundSize: '32px 32px',
+          zIndex: 0
         }} />
+
+        {/* Hero image banner with fade-out bottom */}
+        <div style={{ position: 'relative', width: '100%', height: '320px', overflow: 'hidden' }}>
+          <img
+            src="/edu-hero.png"
+            alt="EduNest education platform"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 30%',
+              display: 'block',
+              opacity: 0.82
+            }}
+          />
+          {/* Top vignette — blends image into dark bg */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.0) 40%, rgba(15,23,42,0.85) 85%, rgba(15,23,42,1) 100%)'
+          }} />
+          {/* Left + right edge vignette */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to right, rgba(15,23,42,0.6) 0%, transparent 25%, transparent 75%, rgba(15,23,42,0.6) 100%)'
+          }} />
+        </div>
 
         {/* Glow orbs */}
         <div style={{
           position: 'absolute',
-          top: '-60px',
-          left: '20%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(239,77,35,0.15) 0%, transparent 70%)',
+          top: '80px',
+          left: '15%',
+          width: '260px',
+          height: '260px',
+          background: 'radial-gradient(circle, rgba(239,77,35,0.18) 0%, transparent 70%)',
           borderRadius: '50%',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          zIndex: 0
         }} />
         <div style={{
           position: 'absolute',
@@ -210,10 +240,11 @@ export default function FeaturesSection() {
           height: '350px',
           background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)',
           borderRadius: '50%',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          zIndex: 0
         }} />
 
-        <div style={{ position: 'relative', padding: '4rem 3rem' }}>
+        <div style={{ position: 'relative', padding: '0 3rem 4rem', zIndex: 1, marginTop: '-40px' }}>
           
           {/* Section heading */}
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
