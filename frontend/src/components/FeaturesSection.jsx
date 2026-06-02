@@ -135,33 +135,83 @@ export default function FeaturesSection() {
 
       {/* Use Cases */}
       <div style={{
-        backgroundColor: '#f9fafb',
-        borderRadius: '24px',
-        padding: '2.5rem 1.5rem',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(253, 242, 233, 0.4) 100%)',
+        borderRadius: '32px',
+        padding: '3.5rem 2rem',
         maxWidth: '1024px',
         margin: '0 auto',
-        border: '1px solid #e5e5e5'
+        border: '1px solid rgba(239, 77, 35, 0.12)',
+        boxShadow: '0 20px 40px -15px rgba(239, 77, 35, 0.05)'
       }} className="sm:p-12">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', marginBottom: '1.5rem' }}>
-          <Sparkles size={18} color="#ef4d23" />
-          <span style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', color: '#ef4d23', letterSpacing: '0.05em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', marginBottom: '2.5rem' }}>
+          <Sparkles size={20} color="#ef4d23" className="pulse-spark" />
+          <span style={{ fontSize: '13px', fontWeight: '800', textTransform: 'uppercase', color: '#ef4d23', letterSpacing: '0.08em', fontFamily: 'var(--font-display)' }}>
             Who uses EduNest?
           </span>
         </div>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '2.5rem',
-          textAlign: 'center'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '2rem'
         }}>
-          {usecases.map((use, idx) => (
-            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#111827' }}>{use.title}</h4>
-              <p style={{ fontSize: '13px', color: '#6b7280', lineHeight: 1.4, maxWidth: '280px', margin: '0 auto' }}>
-                {use.desc}
-              </p>
-            </div>
-          ))}
+          {usecases.map((use, idx) => {
+            // Curated design variables for each target case
+            const themes = [
+              { color: '#ef4d23', bg: '#fdf2e9', badge: '🏫 Academy Level' },
+              { color: '#3b82f6', bg: '#eff6ff', badge: '🏡 Personal Level' },
+              { color: '#10b981', bg: '#ecfdf5', badge: '🎨 Creative Level' }
+            ];
+            const activeTheme = themes[idx] || themes[0];
+            return (
+              <div 
+                key={idx} 
+                className="usecase-card"
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem',
+                  padding: '2rem 1.5rem',
+                  borderRadius: '20px',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {/* Horizontal line banner matching active theme */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', backgroundColor: activeTheme.color }} />
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    backgroundColor: activeTheme.bg,
+                    color: activeTheme.color,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '700',
+                    fontSize: '14px'
+                  }}>
+                    {idx + 1}
+                  </div>
+                  <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: activeTheme.color, letterSpacing: '0.04em' }}>
+                    {activeTheme.badge}
+                  </span>
+                </div>
+
+                <h4 style={{ fontSize: '1.2rem', fontWeight: '800', color: '#111827', margin: 0, fontFamily: 'var(--font-display)' }}>
+                  {use.title}
+                </h4>
+                <p style={{ fontSize: '13.5px', color: '#4b5563', lineHeight: '1.5', margin: 0 }}>
+                  {use.desc}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -170,6 +220,18 @@ export default function FeaturesSection() {
           transform: translateY(-4px);
           border-color: #ef4d23 !important;
           box-shadow: 0 12px 20px -5px rgba(239, 77, 35, 0.05) !important;
+        }
+        .usecase-card:hover {
+          transform: translateY(-5px);
+          border-color: #ef4d23 !important;
+          box-shadow: 0 15px 30px rgba(239, 77, 35, 0.08) !important;
+        }
+        .pulse-spark {
+          animation: spark-pulse 2s infinite ease-in-out;
+        }
+        @keyframes spark-pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.2); opacity: 0.8; }
         }
       `}</style>
     </div>

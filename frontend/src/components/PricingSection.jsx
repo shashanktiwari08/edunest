@@ -97,17 +97,16 @@ export default function PricingSection({ onBuyNow }) {
               backgroundColor: '#ffffff',
               borderRadius: '24px',
               padding: '2.25rem 2rem',
-              border: tier.popular ? '2.5px solid #ef4d23' : '1px solid #e5e5e5',
-              boxShadow: tier.popular ? '0 20px 25px -5px rgba(239, 77, 35, 0.08)' : '0 4px 6px -1px rgba(0,0,0,0.02)',
+              border: '1px solid #e5e5e5',
+              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
               position: 'relative',
               overflow: 'hidden',
-              transition: 'transform 0.3s',
-              transform: tier.popular ? 'scale(1.03)' : 'scale(1)'
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
-            className="pricing-card"
+            className={`pricing-card ${tier.popular ? 'pricing-card-popular' : ''}`}
           >
             {tier.popular && (
               <div style={{
@@ -197,10 +196,24 @@ export default function PricingSection({ onBuyNow }) {
       </div>
 
       <style>{`
+        .pricing-card {
+          transform: scale(1);
+        }
+        .pricing-card:hover {
+          transform: translateY(-8px) scale(1.02) !important;
+          border-color: #ef4d23 !important;
+          box-shadow: 0 20px 30px rgba(239, 77, 35, 0.08) !important;
+        }
+        .pricing-card-popular {
+          /* subtle unique visual indicators for popular tier cards if needed */
+        }
         @media (max-width: 768px) {
           .pricing-card {
             transform: none !important;
             padding: 1.75rem 1.5rem !important;
+          }
+          .pricing-card:hover {
+            transform: none !important;
           }
         }
       `}</style>
