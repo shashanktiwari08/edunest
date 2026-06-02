@@ -2,8 +2,8 @@ const { createClient } = require('@supabase/supabase-js');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const supabaseUrl = 'https://xzzkfewuswgyhowvdvcn.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6emtmZXd1c3dneWhvd3ZkdmNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4ODM5MDgsImV4cCI6MjA5NTQ1OTkwOH0.zCsHh6DapBxL9Lp_OKCWvRN0tMAd39P2x6_SUf4gJ74';
+const supabaseUrl = 'https://wmwqzedjuthfdkqwtsog.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indtd3F6ZWRqdXRoZmRrcXd0c29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NTY0NTUsImV4cCI6MjA5NTEzMjQ1NX0.BmaEllQe3nck2C01tRYEHTLAMWC6F4kw-XV5F0N-G4M';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 console.log('Supabase client initialized pointing to:', supabaseUrl);
