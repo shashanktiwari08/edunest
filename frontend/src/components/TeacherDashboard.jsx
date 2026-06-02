@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import { Users, BookOpen, Radio, Calendar, CheckSquare, PlusCircle } from 'lucide-react';
+import { Users, BookOpen, Radio, Calendar, CheckSquare, PlusCircle, MessageSquare } from 'lucide-react';
+import CommunityChat from './CommunityChat';
 
 const API_BASE = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api` 
@@ -400,6 +401,12 @@ export default function TeacherDashboard() {
           onClick={() => setActiveTab('leaves')}
         >
           <Calendar size={18} /> Leave Request
+        </button>
+        <button
+          className={`btn ${activeTab === 'chat' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => setActiveTab('chat')}
+        >
+          <MessageSquare size={18} /> Community Chat
         </button>
       </div>
 
@@ -869,6 +876,11 @@ export default function TeacherDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* --- COMMUNITY CHAT VIEW --- */}
+      {activeTab === 'chat' && (
+        <CommunityChat customBatches={batches} />
       )}
 
       {/* Alphabetic Enrolled Students Popup Modal Overlay */}

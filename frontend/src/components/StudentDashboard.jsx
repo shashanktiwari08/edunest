@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, Calendar, IndianRupee, Award, AlertCircle, Clock } from 'lucide-react';
+import { BookOpen, Calendar, IndianRupee, Award, AlertCircle, Clock, MessageSquare, LayoutDashboard } from 'lucide-react';
+import CommunityChat from './CommunityChat';
 
 const API_BASE = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api` 
   : 'http://localhost:5000/api';
 
 export default function StudentDashboard() {
-  const { token } = useAuth();
+  // Sub-tab selection state
+  const [activeSubTab, setActiveSubTab] = useState('dashboard'); // 'dashboard' | 'chat'
 
   // Aggregate Data state
   const [dashboardData, setDashboardData] = useState({
@@ -70,8 +72,64 @@ export default function StudentDashboard() {
   const strokeDashoffset = circumference - (attendance.attendanceRate / 100) * circumference;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-      {/* 1. FINANCIAL TRACKER BANNER */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      
+      {/* Tab Navigation Controls */}
+      <div style={{
+        display: 'flex',
+        gap: '0.75rem',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backdropFilter: 'blur(10px)',
+        padding: '6px',
+        borderRadius: '16px',
+        border: '1px solid var(--border)',
+        inlineSize: 'fit-content'
+      }}>
+        <button
+          onClick={() => setActiveSubTab('dashboard')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            fontSize: '13px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            backgroundColor: activeSubTab === 'dashboard' ? '#4f46e5' : 'transparent',
+            color: activeSubTab === 'dashboard' ? '#ffffff' : '#64748b',
+            transition: 'all 0.2s'
+          }}
+        >
+          <LayoutDashboard size={16} /> Operations Console
+        </button>
+        <button
+          onClick={() => setActiveSubTab('chat')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            fontSize: '13px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            backgroundColor: activeSubTab === 'chat' ? '#4f46e5' : 'transparent',
+            color: activeSubTab === 'chat' ? '#ffffff' : '#64748b',
+            transition: 'all 0.2s'
+          }}
+        >
+          <MessageSquare size={16} /> Batch Communities ({batches.length})
+        </button>
+      </div>
+
+      {activeSubTab === 'chat' ? (
+        <CommunityChat customBatches={batches} />
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          {/* 1. FINANCIAL TRACKER BANNER */}
       <div 
         className="card"
         style={{
@@ -321,5 +379,7 @@ export default function StudentDashboard() {
         </div>
       </div>
     </div>
+  )}
+</div>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import { UserPlus, IndianRupee, Calendar, Check, X, ShieldAlert, Award, Lock, KeyRound, ChevronRight, Smartphone } from 'lucide-react';
+import { UserPlus, IndianRupee, Calendar, Check, X, ShieldAlert, Award, Lock, KeyRound, ChevronRight, Smartphone, MessageSquare } from 'lucide-react';
+import CommunityChat from './CommunityChat';
 
 const API_BASE = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api` 
@@ -409,6 +410,12 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab('credentials')}
         >
           <Lock size={18} /> Credentials Override
+        </button>
+        <button
+          className={`btn ${activeTab === 'chat' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => setActiveTab('chat')}
+        >
+          <MessageSquare size={18} /> Community Chat
         </button>
       </div>
 
@@ -1280,6 +1287,13 @@ export default function AdminDashboard() {
           )}
 
         </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 5. TAB: COMMUNITY BATCH CHAT SECTION                    */}
+      {/* ======================================================== */}
+      {activeTab === 'chat' && (
+        <CommunityChat />
       )}
     </div>
   );

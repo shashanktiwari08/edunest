@@ -23,10 +23,12 @@ app.use(cors({
 app.use(express.json());
 
 // Set up routes
+const chatRouter = require('./routes/chat');
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/teacher', teacherRouter);
 app.use('/api/student', studentRouter);
+app.use('/api/chat', chatRouter);
 
 // Basic health check
 app.get('/health', (req, res) => {
