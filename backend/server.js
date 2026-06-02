@@ -33,6 +33,11 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', time: new Date() });
 });
 
+// Welcome message for root index
+app.get('/', (req, res) => {
+  res.send('Edunest Tuition Management Backend API is up and running.');
+});
+
 // Create HTTP server
 const server = http.createServer(app);
 
