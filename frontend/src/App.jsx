@@ -134,18 +134,10 @@ export default function App() {
           flexDirection: 'column'
         }} className="sm:h-[calc(100vh-32px)] sm:rounded-3xl premium-scroll">
           
-          {/* Background Video */}
-          <video
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_114316_1c7889ad-2885-410e-b493-98119fee0ddb.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            disableRemotePlayback
-            webkit-playsinline="true"
-            x5-playsinline="true"
-            poster="https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=60"
+          {/* Hero Background Image - Education & Classroom Vibe */}
+          <img
+            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1920&auto=format&fit=crop"
+            alt="Education workspace background"
             style={{
               position: 'absolute',
               top: 0,
@@ -154,15 +146,16 @@ export default function App() {
               height: '100%',
               objectFit: 'cover',
               pointerEvents: 'none',
-              zIndex: 0
+              zIndex: 0,
+              opacity: 0.95
             }}
           />
 
-          {/* Above the video: absolute inset-0 bg-white/10 overlay */}
+          {/* Above the background: light gradient/overlay for premium readability without washing out */}
           <div style={{
             position: 'absolute',
             top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.5))',
             zIndex: 1
           }} />
 
@@ -375,12 +368,12 @@ export default function App() {
 
                   {/* Form */}
                   <form onSubmit={handleLoginSubmit}>
-                    <div className="form-group" style={{ position: 'relative' }}>
-                      <label className="form-label">Email or Mobile Number</label>
+                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Email or Mobile Number</label>
                       <input
                         type="text"
                         className="form-control"
-                        style={{ paddingLeft: '2.5rem' }}
+                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
                         placeholder="e.g. 9999999999 or owner@edu.com"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
@@ -388,16 +381,16 @@ export default function App() {
                       />
                       <Smartphone 
                         size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '1rem', color: 'var(--text-muted)' }} 
+                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
                       />
                     </div>
 
-                    <div className="form-group" style={{ position: 'relative' }}>
-                      <label className="form-label">Password</label>
+                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Password</label>
                       <input
                         type="password"
                         className="form-control"
-                        style={{ paddingLeft: '2.5rem' }}
+                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -405,14 +398,14 @@ export default function App() {
                       />
                       <Lock 
                         size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '1rem', color: 'var(--text-muted)' }} 
+                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
                       />
                     </div>
 
                     <button 
                       type="submit" 
                       className="btn btn-primary" 
-                      style={{ width: '100%', marginTop: '1rem', backgroundColor: '#ef4d23' }}
+                      style={{ width: '100%', marginTop: '1.25rem', backgroundColor: '#ef4d23', color: '#ffffff', fontWeight: '700', fontSize: '14px', borderRadius: '10px' }}
                       disabled={submitting}
                     >
                       <LogIn size={18} /> {submitting ? 'Authenticating...' : 'Sign In'}
@@ -484,11 +477,12 @@ export default function App() {
                   )}
 
                   <form onSubmit={handleSubscribeSubmit}>
-                    <div className="form-group" style={{ position: 'relative' }}>
-                      <label className="form-label">Full Name / Academy Name</label>
+                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Full Name / Academy Name</label>
                       <input
                         type="text"
                         className="form-control"
+                        style={{ backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
                         placeholder="e.g. Apex Tuition Center"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -496,12 +490,12 @@ export default function App() {
                       />
                     </div>
 
-                    <div className="form-group" style={{ position: 'relative' }}>
-                      <label className="form-label">Owner Email Address</label>
+                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Owner Email Address</label>
                       <input
                         type="email"
                         className="form-control"
-                        style={{ paddingLeft: '2.5rem' }}
+                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
                         placeholder="e.g. owner@gmail.com"
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.target.value)}
@@ -509,16 +503,16 @@ export default function App() {
                       />
                       <Mail 
                         size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '1rem', color: 'var(--text-muted)' }} 
+                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
                       />
                     </div>
 
-                    <div className="form-group" style={{ position: 'relative' }}>
-                      <label className="form-label">Choose Security Password</label>
+                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Choose Security Password</label>
                       <input
                         type="password"
                         className="form-control"
-                        style={{ paddingLeft: '2.5rem' }}
+                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -526,14 +520,14 @@ export default function App() {
                       />
                       <Lock 
                         size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '1rem', color: 'var(--text-muted)' }} 
+                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
                       />
                     </div>
 
                     <button 
                       type="submit" 
                       className="btn btn-primary" 
-                      style={{ width: '100%', marginTop: '1rem', backgroundColor: '#ef4d23' }}
+                      style={{ width: '100%', marginTop: '1.25rem', backgroundColor: '#ef4d23', color: '#ffffff', fontWeight: '700', fontSize: '14px', borderRadius: '10px' }}
                       disabled={submitting}
                     >
                       {submitting ? 'Processing Payment...' : `Subscribe - ${selectedPlan?.price || 'Get Access'}`}
