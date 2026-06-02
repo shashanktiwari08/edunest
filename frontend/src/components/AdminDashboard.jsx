@@ -892,7 +892,7 @@ export default function AdminDashboard() {
                           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                             <select
                               className="form-control"
-                              style={{ width: '130px', padding: '0.4rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border)' }}
+                              style={{ width: '148px', padding: '0.4rem 1.75rem 0.4rem 0.6rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border)', appearance: 'auto', WebkitAppearance: 'auto' }}
                               value={salaryPayType[s.id] || 'part'}
                               onChange={(e) => {
                                 const val = e.target.value;
@@ -1010,7 +1010,7 @@ export default function AdminDashboard() {
                           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                             <select
                               className="form-control"
-                              style={{ width: '130px', padding: '0.4rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border)' }}
+                              style={{ width: '148px', padding: '0.4rem 1.75rem 0.4rem 0.6rem', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border)', appearance: 'auto', WebkitAppearance: 'auto' }}
                               value={feePayType[f.id] || 'part'}
                               onChange={(e) => {
                                 const val = e.target.value;
