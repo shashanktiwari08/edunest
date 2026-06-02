@@ -7,6 +7,8 @@ import StudentDashboard from './components/StudentDashboard';
 import Navbar from './components/Navbar';
 import DashboardPreview from './components/DashboardPreview';
 import PricingSection from './components/PricingSection';
+import FeaturesSection from './components/FeaturesSection';
+import AboutSection from './components/AboutSection';
 import { 
   Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock, 
   ChevronRight, X, Mail, Menu 
@@ -119,7 +121,7 @@ export default function App() {
       }} className="sm:p-4 font-inter">
         
         {/* HERO CONTAINER CLIPS EVERYTHING INSIDE */}
-        <div style={{
+        <div id="home" style={{
           position: 'relative',
           width: '100%',
           height: 'calc(100vh - 24px)',
@@ -267,9 +269,18 @@ export default function App() {
 
           </div>
         </div>
+        {/* Features Section */}
+        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
+          <FeaturesSection />
+        </div>
+
+        {/* About Section */}
+        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
+          <AboutSection />
+        </div>
 
         {/* Pricing Section (Below Hero, fully visible on scroll) */}
-        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6">
+        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
           <PricingSection onBuyNow={handleOpenSubscribeModal} />
         </div>
 

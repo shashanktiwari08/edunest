@@ -74,9 +74,6 @@ export default function Navbar({ onOpenLogin }) {
           <a href="#features" style={{ color: '#4b5563' }}>Features</a>
           <a href="#about" style={{ color: '#4b5563' }}>About</a>
           <a href="#pricing" style={{ color: '#4b5563' }}>Pricing</a>
-          <a href="#pages" style={{ color: '#ef4d23', display: 'flex', alignItems: 'center', gap: '2px' }}>
-            Pages <ChevronDown size={14} style={{ marginTop: '2px' }} />
-          </a>
         </div>
 
         {/* Right cluster */}

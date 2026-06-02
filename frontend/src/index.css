@@ -55,7 +55,10 @@
   --danger-light: rgba(248, 113, 113, 0.15);
 }
 
-/* --- Base Resets & Global Styles --- */
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -703,5 +706,21 @@ input:checked + .toggle-slider:before {
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Entrance and Scroll Animations */
+.scroll-animate {
+  animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
