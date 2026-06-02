@@ -33,14 +33,20 @@ router.get('/:batchId', authenticateToken, async (req, res) => {
   }
 });
 
-// Post a message
+// Post a message (text or file/image as base64)
 router.post('/:batchId', authenticateToken, async (req, res) => {
   const { batchId } = req.params;
-  const { message } = req.body;
+  const { message, file_data, file_name, file_type } = req.body;
   const user = req.user; // populated by authenticateToken: { id, name, role }
 
-  if (!message || !message.trim()) {
-    return res.status(400).json({ error: 'Message content is required' });
+  // Must have either a text message or a file
+  if ((!message || !message.trim()) && !file_data) {
+    return res.status(400).json({ error: 'Message content or file is required' });
+  }
+
+  // Validate file size (max 5MB in base64 ~ 6.7MB raw string)
+  if (file_data && file_data.length > 7_000_000) {
+    return res.status(400).json({ error: 'File too large. Maximum size is 5MB.' });
   }
 
   const newMessage = {
@@ -49,7 +55,10 @@ router.post('/:batchId', authenticateToken, async (req, res) => {
     sender_id: user.id,
     sender_name: user.name,
     sender_role: user.role,
-    message: message.trim(),
+    message: message ? message.trim() : null,
+    file_data: file_data || null,      // base64 encoded file content
+    file_name: file_name || null,
+    file_type: file_type || null,      // e.g. 'image/jpeg', 'application/pdf'
     created_at: new Date().toISOString()
   };
 

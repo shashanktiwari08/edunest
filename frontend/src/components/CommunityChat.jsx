@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { MessageSquare, Send, Users, Shield, GraduationCap, Award, Search, Sparkles } from 'lucide-react';
+import { MessageSquare, Send, Users, Shield, GraduationCap, Award, Search, Sparkles, Paperclip, X, Image, FileText, Download } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api` 
@@ -15,10 +15,13 @@ export default function CommunityChat({ customBatches = null }) {
   const [batchesLoading, setBatchesLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const [uploadFile, setUploadFile] = useState(null); // { name, type, dataUrl }
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
-
-
+  const prevBatchIdRef = useRef(null);
 
   // 1. Fetch channels/batches based on user role
   useEffect(() => {
@@ -33,22 +36,13 @@ export default function CommunityChat({ customBatches = null }) {
       }
 
       try {
-        let endpoint = `${API_BASE}/student/dashboard`;
-        if (user.role === 'teacher') endpoint = `${API_BASE}/teacher/batches`;
-        else if (user.role === 'admin') endpoint = `${API_BASE}/admin/batches`; // We will expose or construct
-
-        // Admin fallback check: if admin batches is not direct, let's fetch all batches
+        let endpoint;
         if (user.role === 'admin') {
-          const res = await fetch(`${API_BASE}/teacher/batches`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setBatches(data);
-            if (data.length > 0) setSelectedBatch(data[0]);
-          }
-          setBatchesLoading(false);
-          return;
+          endpoint = `${API_BASE}/admin/batches`;
+        } else if (user.role === 'teacher') {
+          endpoint = `${API_BASE}/teacher/batches`;
+        } else {
+          endpoint = `${API_BASE}/student/dashboard`;
         }
 
         const res = await fetch(endpoint, {
@@ -57,12 +51,9 @@ export default function CommunityChat({ customBatches = null }) {
 
         if (res.ok) {
           const data = await res.json();
-          // Extract batches list
           const list = data.batches || data || [];
           setBatches(list);
-          if (list.length > 0) {
-            setSelectedBatch(list[0]);
-          }
+          if (list.length > 0) setSelectedBatch(list[0]);
         }
       } catch (err) {
         console.error('Failed to load batch channels:', err);
@@ -74,7 +65,7 @@ export default function CommunityChat({ customBatches = null }) {
     fetchChannels();
   }, [token, user, customBatches]);
 
-  // 2. Fetch messages for the selected batch
+  // 2. Fetch messages for the selected batch (no auto-scroll on poll)
   const fetchMessages = async (batchId) => {
     if (!batchId) return;
     try {
@@ -92,59 +83,118 @@ export default function CommunityChat({ customBatches = null }) {
 
   useEffect(() => {
     if (!selectedBatch) return;
-    setMessagesLoading(true);
-    fetchMessages(selectedBatch.id).finally(() => setMessagesLoading(false));
 
-    // Short-polling interval (3 seconds) for real-time visual syncing
+    const isNewBatch = prevBatchIdRef.current !== selectedBatch.id;
+    prevBatchIdRef.current = selectedBatch.id;
+
+    setMessagesLoading(true);
+    fetchMessages(selectedBatch.id).finally(() => {
+      setMessagesLoading(false);
+      // Only scroll on initial batch load
+      if (isNewBatch) {
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    });
+
+    // Poll every 4 seconds, no scroll
     const interval = setInterval(() => {
       fetchMessages(selectedBatch.id);
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [selectedBatch, token]);
 
-  // 3. Send Message
+  // 3. Handle file selection
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadError('');
+
+    // Validate size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File too large. Max 5MB allowed.');
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setUploadFile({
+        name: file.name,
+        type: file.type,
+        dataUrl: ev.target.result
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  // 4. Send Message (text or file)
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!typedMessage.trim() || !selectedBatch) return;
+    if (!selectedBatch) return;
+    if (!typedMessage.trim() && !uploadFile) return;
 
+    setUploading(true);
     const messageText = typedMessage.trim();
     setTypedMessage('');
 
-    // Pre-inject client-side instantly for snappy performance feel
+    // Pre-inject optimistically
     const tempMessage = {
       id: Math.random().toString(),
       batch_id: selectedBatch.id,
       sender_id: user.id,
       sender_name: user.name,
       sender_role: user.role,
-      message: messageText,
+      message: messageText || null,
+      file_data: uploadFile ? uploadFile.dataUrl : null,
+      file_name: uploadFile ? uploadFile.name : null,
+      file_type: uploadFile ? uploadFile.type : null,
       created_at: new Date().toISOString()
     };
     setMessages((prev) => [...prev, tempMessage]);
 
+    // Scroll to new message
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+
+    const fileToSend = uploadFile;
+    setUploadFile(null);
+
     try {
+      const body = {
+        message: messageText || null,
+        file_data: fileToSend ? fileToSend.dataUrl : null,
+        file_name: fileToSend ? fileToSend.name : null,
+        file_type: fileToSend ? fileToSend.type : null
+      };
+
       const res = await fetch(`${API_BASE}/chat/${selectedBatch.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ message: messageText })
+        body: JSON.stringify(body)
       });
 
-      if (!res.ok) {
-        console.error('Failed to store backend message');
-      } else {
-        // Refresh messages list
+      if (res.ok) {
         fetchMessages(selectedBatch.id);
       }
     } catch (err) {
       console.error('Failed to dispatch message:', err);
+    } finally {
+      setUploading(false);
     }
   };
 
-  const filteredBatches = batches.filter(b => 
+  // Helper: is an image type
+  const isImage = (type) => type && type.startsWith('image/');
+
+  const filteredBatches = batches.filter(b =>
     b.batch_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -162,7 +212,7 @@ export default function CommunityChat({ customBatches = null }) {
       
       {/* Sidebar Channels List */}
       <div style={{
-        width: '300px',
+        width: '280px',
         borderRight: '1px solid var(--border)',
         backgroundColor: '#f8fafc',
         display: 'flex',
@@ -187,7 +237,9 @@ export default function CommunityChat({ customBatches = null }) {
             </div>
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Community Hub</h3>
-              <span style={{ fontSize: '10px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>Batch Channels</span>
+              <span style={{ fontSize: '10px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>
+                {user.role === 'admin' ? 'All Batch Channels' : 'My Batch Channels'}
+              </span>
             </div>
           </div>
 
@@ -206,7 +258,8 @@ export default function CommunityChat({ customBatches = null }) {
                 padding: '6px 12px 6px 32px',
                 fontSize: '12px',
                 outline: 'none',
-                color: '#334155'
+                color: '#334155',
+                boxSizing: 'border-box'
               }}
             />
             <Search size={14} style={{ position: 'absolute', left: '10px', top: '9px', color: '#94a3b8' }} />
@@ -253,13 +306,16 @@ export default function CommunityChat({ customBatches = null }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: '700',
-                    fontSize: '13px'
+                    fontSize: '13px',
+                    flexShrink: 0
                   }}>
                     #
                   </div>
                   <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
-                    <span style={{ fontSize: '13px', fontWeight: '700', display: 'block' }}>{b.batch_name}</span>
-                    <span style={{ fontSize: '10px', color: '#94a3b8' }}>{b.schedule_description || 'Active class chat'}</span>
+                    <span style={{ fontSize: '13px', fontWeight: '700', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.batch_name}</span>
+                    <span style={{ fontSize: '10px', color: '#94a3b8' }}>
+                      {b.teacher_name ? `by ${b.teacher_name}` : (b.schedule_description || 'Active class chat')}
+                    </span>
                   </div>
                 </button>
               );
@@ -273,7 +329,7 @@ export default function CommunityChat({ customBatches = null }) {
       </div>
 
       {/* Main Chat Pane */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff', minWidth: 0 }}>
         {selectedBatch ? (
           <>
             {/* Chat Pane Header */}
@@ -283,17 +339,18 @@ export default function CommunityChat({ customBatches = null }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              backgroundColor: '#ffffff'
+              backgroundColor: '#ffffff',
+              flexShrink: 0
             }}>
               <div>
                 <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span># {selectedBatch.batch_name}</span>
                   <span style={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f0fdf4', color: '#16a34a', borderRadius: '9999px', padding: '2px 8px', fontSize: '9px', fontWeight: '700', textTransform: 'uppercase' }}>
-                    <Sparkles size={8} style={{ marginRight: '3px' }} /> Active Community
+                    <Sparkles size={8} style={{ marginRight: '3px' }} /> Active
                   </span>
                 </h3>
                 <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '2px' }}>
-                  👥 Enrolled members, Admin, and batch Instructors are automatically joined
+                  Enrolled members, Admin &amp; batch teachers are in this channel
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '12px', fontWeight: '600' }}>
@@ -319,7 +376,6 @@ export default function CommunityChat({ customBatches = null }) {
                 messages.map((msg) => {
                   const isOwnMessage = msg.sender_id === user.id;
                   
-                  // Role Badge coloring logic
                   let badgeBg = '#f1f5f9';
                   let badgeText = '#475569';
                   let RoleIcon = GraduationCap;
@@ -369,7 +425,7 @@ export default function CommunityChat({ customBatches = null }) {
 
                       {/* Message bubble */}
                       <div style={{
-                        padding: '0.75rem 1rem',
+                        padding: msg.file_data ? '0.5rem' : '0.75rem 1rem',
                         borderRadius: '16px',
                         borderTopLeftRadius: isOwnMessage ? '16px' : '4px',
                         borderTopRightRadius: isOwnMessage ? '4px' : '16px',
@@ -378,10 +434,74 @@ export default function CommunityChat({ customBatches = null }) {
                         border: isOwnMessage ? 'none' : '1px solid #e2e8f0',
                         fontSize: '13px',
                         lineHeight: '1.4',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.01)',
-                        wordBreak: 'break-word'
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        maxWidth: '100%'
                       }}>
-                        {msg.message}
+                        {/* Show text if present */}
+                        {msg.message && (
+                          <div style={{ padding: msg.file_data ? '0.5rem 0.5rem 0.25rem' : '0' }}>
+                            {msg.message}
+                          </div>
+                        )}
+
+                        {/* Show image if file is an image */}
+                        {msg.file_data && isImage(msg.file_type) && (
+                          <div>
+                            <img
+                              src={msg.file_data}
+                              alt={msg.file_name || 'Shared image'}
+                              style={{
+                                maxWidth: '280px',
+                                maxHeight: '200px',
+                                width: '100%',
+                                objectFit: 'contain',
+                                borderRadius: '10px',
+                                display: 'block',
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => window.open(msg.file_data, '_blank')}
+                            />
+                            {msg.file_name && (
+                              <div style={{
+                                fontSize: '10px',
+                                opacity: 0.7,
+                                marginTop: '4px',
+                                padding: '0 4px',
+                                textAlign: isOwnMessage ? 'right' : 'left'
+                              }}>{msg.file_name}</div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Show file download card for non-image files */}
+                        {msg.file_data && !isImage(msg.file_type) && (
+                          <a
+                            href={msg.file_data}
+                            download={msg.file_name || 'download'}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '0.6rem 0.75rem',
+                              backgroundColor: isOwnMessage ? 'rgba(255,255,255,0.15)' : '#f1f5f9',
+                              borderRadius: '10px',
+                              textDecoration: 'none',
+                              color: isOwnMessage ? '#ffffff' : '#334155',
+                              margin: msg.message ? '0.25rem 0 0' : '0'
+                            }}
+                          >
+                            <FileText size={18} style={{ flexShrink: 0 }} />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '12px', fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {msg.file_name || 'File'}
+                              </div>
+                              <div style={{ fontSize: '10px', opacity: 0.7 }}>Click to download</div>
+                            </div>
+                            <Download size={14} style={{ flexShrink: 0 }} />
+                          </a>
+                        )}
                       </div>
                     </div>
                   );
@@ -417,17 +537,88 @@ export default function CommunityChat({ customBatches = null }) {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* File Preview Strip */}
+            {uploadFile && (
+              <div style={{
+                padding: '0.5rem 1.5rem',
+                backgroundColor: '#f0f4ff',
+                borderTop: '1px solid #e0e7ff',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                {isImage(uploadFile.type) ? (
+                  <img src={uploadFile.dataUrl} alt="preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #c7d2fe' }} />
+                ) : (
+                  <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#e0e7ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FileText size={20} color="#4f46e5" />
+                  </div>
+                )}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '12px', fontWeight: '700', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{uploadFile.name}</div>
+                  <div style={{ fontSize: '10px', color: '#64748b' }}>{uploadFile.type}</div>
+                </div>
+                <button
+                  onClick={() => setUploadFile(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', padding: '4px' }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            )}
+
+            {uploadError && (
+              <div style={{ padding: '4px 1.5rem', backgroundColor: '#fef2f2', color: '#dc2626', fontSize: '11px', borderTop: '1px solid #fecaca' }}>
+                {uploadError}
+              </div>
+            )}
+
             {/* Input Form Box */}
             <form onSubmit={handleSendMessage} style={{
-              padding: '1.25rem 1.5rem',
+              padding: '1rem 1.25rem',
               borderTop: '1px solid var(--border)',
               backgroundColor: '#ffffff',
               display: 'flex',
-              gap: '10px'
+              gap: '8px',
+              alignItems: 'flex-end',
+              flexShrink: 0
             }}>
+              {/* Hidden file input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.ppt,.pptx"
+                style={{ display: 'none' }}
+              />
+
+              {/* Attach button */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                title="Attach image or file"
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  backgroundColor: '#f1f5f9',
+                  color: '#475569',
+                  border: '1.5px solid #e2e8f0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  flexShrink: 0
+                }}
+                className="attach-btn"
+              >
+                <Paperclip size={16} />
+              </button>
+
               <input
                 type="text"
-                placeholder={`Send a message to #${selectedBatch.batch_name}...`}
+                placeholder={uploadFile ? `Add a caption (optional)...` : `Message #${selectedBatch.batch_name}...`}
                 value={typedMessage}
                 onChange={(e) => setTypedMessage(e.target.value)}
                 style={{
@@ -438,27 +629,30 @@ export default function CommunityChat({ customBatches = null }) {
                   fontSize: '13px',
                   outline: 'none',
                   color: '#1e293b',
-                  backgroundColor: '#f8fafc'
+                  backgroundColor: '#f8fafc',
+                  minWidth: 0
                 }}
               />
               <button
                 type="submit"
+                disabled={uploading || (!typedMessage.trim() && !uploadFile)}
                 style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '12px',
-                  backgroundColor: '#4f46e5',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  backgroundColor: (uploading || (!typedMessage.trim() && !uploadFile)) ? '#c7d2fe' : '#4f46e5',
                   color: '#ffffff',
                   border: 'none',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
+                  cursor: (uploading || (!typedMessage.trim() && !uploadFile)) ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.2s',
+                  flexShrink: 0
                 }}
                 className="chat-send-btn"
               >
-                <Send size={16} />
+                <Send size={15} />
               </button>
             </form>
           </>
@@ -481,21 +675,30 @@ export default function CommunityChat({ customBatches = null }) {
 
       <style>{`
         .chat-container-layout {
-          height: 600px !important;
+          height: 620px !important;
+        }
+        .channel-btn:hover {
+          background-color: rgba(79, 70, 229, 0.05) !important;
+        }
+        .attach-btn:hover {
+          background-color: #e0e7ff !important;
+          border-color: #c7d2fe !important;
+          color: #4f46e5 !important;
+        }
+        .chat-send-btn:hover:not(:disabled) {
+          background-color: #4338ca !important;
         }
         @media (max-width: 768px) {
           .chat-container-layout {
             flex-direction: column !important;
             height: auto !important;
+            min-height: 500px !important;
           }
           .chat-sidebar {
             width: 100% !important;
             border-right: none !important;
             border-bottom: 1px solid var(--border) !important;
-            max-height: 200px !important;
-          }
-          .chat-send-btn:hover {
-            background-color: #4338ca !important;
+            max-height: 180px !important;
           }
         }
       `}</style>

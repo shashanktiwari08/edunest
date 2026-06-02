@@ -93,7 +93,32 @@ router.post('/users', async (req, res) => {
   }
 });
 
-// 2. Fetch users filtered by role
+// 2. Get ALL batches (admin sees every batch channel)
+router.get('/batches', async (req, res) => {
+  try {
+    const { data: batches, error } = await supabase
+      .from('batches')
+      .select('*, users!batches_teacher_id_fkey(name)')
+      .order('batch_name', { ascending: true });
+
+    if (error) throw error;
+
+    const result = batches.map((b) => ({
+      id: b.id,
+      batch_name: b.batch_name,
+      teacher_id: b.teacher_id,
+      teacher_name: b.users ? b.users.name : 'Unknown Teacher',
+      schedule_description: b.schedule_description || 'Active Class'
+    }));
+
+    return res.json(result);
+  } catch (error) {
+    console.error('Error fetching all batches for admin:', error.message);
+    return res.status(500).json({ error: 'Failed to fetch batches' });
+  }
+});
+
+// 2b. Fetch users filtered by role
 router.get('/users', async (req, res) => {
   const { role } = req.query;
   await checkAndRefreshFinances();

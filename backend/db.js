@@ -70,6 +70,28 @@ const initDb = async () => {
     }
 
     console.log('Cloud database validation and seeding finished successfully!');
+
+    // Migrate chat_messages table: add file upload columns if missing
+    try {
+      // Try to add file columns via a safe DO block through rpc
+      const { error: migErr } = await supabase.rpc('run_sql', {
+        query: `
+          ALTER TABLE chat_messages 
+            ADD COLUMN IF NOT EXISTS file_data TEXT,
+            ADD COLUMN IF NOT EXISTS file_name TEXT,
+            ADD COLUMN IF NOT EXISTS file_type TEXT;
+        `
+      });
+      if (migErr) {
+        // rpc may not be available; that's okay, the backend will use memory fallback for file messages
+        console.warn('Note: Could not auto-migrate chat_messages columns (expected if RPC not enabled). Please run in Supabase SQL editor:\n  ALTER TABLE chat_messages ADD COLUMN IF NOT EXISTS file_data TEXT, ADD COLUMN IF NOT EXISTS file_name TEXT, ADD COLUMN IF NOT EXISTS file_type TEXT;');
+      } else {
+        console.log('chat_messages file columns ensured.');
+      }
+    } catch (migError) {
+      console.warn('Migration check skipped:', migError.message);
+    }
+
   } catch (error) {
     console.error('Error seeding Cloud Supabase data:', error.message);
   }
