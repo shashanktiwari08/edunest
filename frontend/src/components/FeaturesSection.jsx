@@ -157,9 +157,9 @@ export default function FeaturesSection() {
           {usecases.map((use, idx) => {
             // Curated design variables for each target case
             const themes = [
-              { color: '#ef4d23', bg: '#fdf2e9', badge: '🏫 Academy Level' },
-              { color: '#3b82f6', bg: '#eff6ff', badge: '🏡 Personal Level' },
-              { color: '#10b981', bg: '#ecfdf5', badge: '🎨 Creative Level' }
+              { color: '#ef4d23', bg: '#fdf2e9', badge: 'Academy Level', icon: <School size={16} /> },
+              { color: '#3b82f6', bg: '#eff6ff', badge: 'Personal Level', icon: <Users size={16} /> },
+              { color: '#10b981', bg: '#ecfdf5', badge: 'Creative Level', icon: <BookOpen size={16} /> }
             ];
             const activeTheme = themes[idx] || themes[0];
             return (
@@ -170,12 +170,12 @@ export default function FeaturesSection() {
                   display: 'flex', 
                   flexDirection: 'column', 
                   gap: '1rem',
-                  padding: '2rem 1.5rem',
-                  borderRadius: '20px',
+                  padding: '2.25rem 1.75rem',
+                  borderRadius: '24px',
                   backgroundColor: '#ffffff',
                   border: '1px solid #e5e7eb',
                   transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.01)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -187,26 +187,24 @@ export default function FeaturesSection() {
                   <div style={{
                     width: '36px',
                     height: '36px',
-                    borderRadius: '8px',
+                    borderRadius: '10px',
                     backgroundColor: activeTheme.bg,
                     color: activeTheme.color,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '700',
-                    fontSize: '14px'
+                    justifyContent: 'center'
                   }}>
-                    {idx + 1}
+                    {activeTheme.icon}
                   </div>
-                  <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: activeTheme.color, letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: activeTheme.color, letterSpacing: '0.06em', fontFamily: 'var(--font-display)' }}>
                     {activeTheme.badge}
                   </span>
                 </div>
 
-                <h4 style={{ fontSize: '1.2rem', fontWeight: '800', color: '#111827', margin: 0, fontFamily: 'var(--font-display)' }}>
+                <h4 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#111827', margin: '0.25rem 0 0 0', fontFamily: 'var(--font-display)' }}>
                   {use.title}
                 </h4>
-                <p style={{ fontSize: '13.5px', color: '#4b5563', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ fontSize: '13.5px', color: '#4b5563', lineHeight: '1.6', margin: 0 }}>
                   {use.desc}
                 </p>
               </div>

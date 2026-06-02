@@ -23,9 +23,10 @@ export default function CommunityChat({ customBatches = null }) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Scroll to bottom only when selecting a different batch channel
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [selectedBatch]);
 
   // 1. Fetch channels/batches based on user role
   useEffect(() => {
@@ -145,6 +146,7 @@ export default function CommunityChat({ customBatches = null }) {
       } else {
         // Refresh messages list
         fetchMessages(selectedBatch.id);
+        setTimeout(scrollToBottom, 100);
       }
     } catch (err) {
       console.error('Failed to dispatch message:', err);

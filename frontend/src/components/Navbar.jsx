@@ -79,18 +79,6 @@ export default function Navbar({ onOpenLogin }) {
         {/* Right cluster */}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           
-          {/* Shopping Cart (Hidden on mobile) */}
-          <button className="nav-cart-btn" style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#4b5563',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
-            <ShoppingCart size={20} />
-          </button>
-
           {/* Action button */}
           <button 
             onClick={onOpenLogin}
@@ -109,8 +97,8 @@ export default function Navbar({ onOpenLogin }) {
               transition: 'background-color 0.2s'
             }}
           >
-            <span className="cta-label-desktop">Get early access</span>
-            <span className="cta-label-mobile">Early access</span>
+            <span className="cta-label-desktop">Sign In</span>
+            <span className="cta-label-mobile">Sign In</span>
             <div style={{
               width: '18px',
               height: '18px',
