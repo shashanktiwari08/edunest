@@ -9,7 +9,7 @@ import DashboardPreview from './components/DashboardPreview';
 import PricingSection from './components/PricingSection';
 import { 
   Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock, 
-  ChevronRight, X, Mail 
+  ChevronRight, X, Mail, Menu 
 } from 'lucide-react';
 
 export default function App() {
