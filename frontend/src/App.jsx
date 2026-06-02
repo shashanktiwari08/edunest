@@ -9,6 +9,7 @@ import DashboardPreview from './components/DashboardPreview';
 import PricingSection from './components/PricingSection';
 import FeaturesSection from './components/FeaturesSection';
 import AboutSection from './components/AboutSection';
+import Footer from './components/Footer';
 import { 
   Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock, 
   ChevronRight, X, Mail, Menu 
@@ -135,6 +136,7 @@ export default function App() {
           
           {/* Background Video */}
           <video
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_114316_1c7889ad-2885-410e-b493-98119fee0ddb.mp4"
             autoPlay
             loop
             muted
@@ -283,6 +285,9 @@ export default function App() {
         <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
           <PricingSection onBuyNow={handleOpenSubscribeModal} />
         </div>
+
+        {/* Liquid Glass Footer */}
+        <Footer />
 
         {/* ======================================================== */}
         {/* --- PREMIUM PORTAL INTERACTIVE MODAL (LOGIN/SUBSCRIBE) --- */}
