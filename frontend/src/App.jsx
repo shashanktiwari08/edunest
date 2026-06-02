@@ -688,6 +688,11 @@ export default function App() {
           {user.role === 'teacher' && <TeacherDashboard />}
           {user.role === 'student' && <StudentDashboard />}
         </section>
+
+        {/* Cohesive Liquid Glass Footer */}
+        <div style={{ padding: '0 2.5rem 2.5rem 2.5rem' }}>
+          <Footer />
+        </div>
       </main>
     </div>
   );
