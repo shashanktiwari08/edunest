@@ -8,6 +8,7 @@ const API_BASE = import.meta.env.VITE_API_URL
   : 'http://localhost:5000/api';
 
 export default function StudentDashboard() {
+  const { token } = useAuth();
   // Sub-tab selection state
   const [activeSubTab, setActiveSubTab] = useState('dashboard'); // 'dashboard' | 'chat'
 
