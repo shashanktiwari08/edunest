@@ -1,6 +1,5 @@
-import React from 'react';
 import { 
-  Users, Calendar, IndianRupee, Radio, ShieldAlert, Award, Clock, Sparkles 
+  Users, Calendar, IndianRupee, Radio, ShieldAlert, Award, Clock, Sparkles, School, BookOpen
 } from 'lucide-react';
 
 export default function FeaturesSection() {
