@@ -1,229 +1,374 @@
 import React from 'react';
 import { motion } from 'motion/react';
 
-export default function Footer() {
+// Component 1: LogoIcon (Using branding orange #ef4d23 to match the site)
+function LogoIcon() {
   return (
-    <motion.footer
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-      className="liquid-glass w-full rounded-3xl p-6 md:p-10 text-white/70 mt-32 md:mt-64"
-      style={{ border: 'none', position: 'relative', zIndex: 10 }}
-    >
-      {/* Top Grid: 12-column layout */}
+    <div style={{
+      width: '32px',
+      height: '32px',
+      backgroundColor: '#ef4d23',
+      borderRadius: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0
+    }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 20C4 20 4 14 10 10C16 6 20 4 20 4C20 4 18 8 14 14C10 20 4 20 4 20Z" fill="white" />
+        <path d="M4 20L10 14" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
+// Component 2: FooterCard
+function FooterCard() {
+  const socials = [
+    { icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-slate-800"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>, url: '#linkedin' },
+    { icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-slate-800"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>, url: '#twitter' },
+    { icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-slate-800"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>, url: '#instagram' }
+  ];
+
+  return (
+    <div style={{
+      width: '100%',
+      maxWidth: '1152px', // 6xl = 1152px
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      paddingLeft: '1rem',
+      paddingRight: '1rem',
+      boxSizing: 'border-box'
+    }}>
+      
+      {/* Outer Gray Body */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gap: '2.5rem',
-        marginBottom: '2.5rem'
-      }} className="footer-top-grid">
+        backgroundColor: '#E9EBEE',
+        borderRadius: '48px',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        margin: '8px'
+      }}>
         
-        {/* First Column Group (5 cols) */}
+        {/* Inner White Box */}
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1rem'
-        }} className="col-span-12 md:col-span-5">
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#ffffff' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" fill="currentColor">
-              <path d="M 4.688 136 C 68.373 136 120 187.627 120 251.312 C 120 252.883 119.967 254.445 119.905 256 L 0 256 L 0 136.096 C 1.555 136.034 3.117 136 4.688 136 Z M 251.312 136 C 252.883 136 254.445 136.034 256 136.096 L 256 256 L 136.095 256 C 136.032 254.438 136.001 252.875 136 251.312 C 136 187.627 187.627 136 251.312 136 Z M 119.905 0 C 119.967 1.555 120 3.117 120 4.688 C 120 68.373 68.373 120 4.687 120 C 3.117 120 1.555 119.967 0 119.905 L 0 0 Z M 256 119.905 C 254.445 119.967 252.883 120 251.312 120 C 187.627 120 136 68.373 136 4.687 C 136 3.117 136.033 1.555 136.095 0 L 256 0 Z" />
-            </svg>
-            <span style={{ fontSize: '20px', fontWeight: '500', fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>
-              LUMINA
-            </span>
-          </div>
-
-          <p style={{
-            fontSize: '13.5px',
-            lineHeight: '1.6',
-            color: 'rgba(255, 255, 255, 0.6)',
-            maxWidth: '380px',
-            fontWeight: '400'
-          }}>
-            Lumina provides premium clarity on global events and cosmic wonders - shared with all for free.
-          </p>
-        </div>
-
-        {/* Links Column Group (7 cols) */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '1.5rem'
-        }} className="col-span-12 md:col-span-7 links-grid">
-          
-          {/* Column 1: Discover */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h4 style={{
-              fontSize: '11.5px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              color: '#ffffff',
-              fontWeight: '600',
-              marginBottom: '1rem'
-            }}>
-              Discover
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {['Labs & Workshops', 'Deep Dive Series', 'Global Circle', 'Resource Vault', 'Future Roadmap'].map((item, idx) => (
-                <a key={idx} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="footer-link">
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 2: The Mission */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h4 style={{
-              fontSize: '11.5px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              color: '#ffffff',
-              fontWeight: '600',
-              marginBottom: '1rem'
-            }}>
-              The Mission
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {['Origin Story', 'The Collective', 'Newsroom Hub', 'Join the Team'].map((item, idx) => (
-                <a key={idx} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="footer-link">
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 3: Concierge */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h4 style={{
-              fontSize: '11.5px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              color: '#ffffff',
-              fontWeight: '600',
-              marginBottom: '1rem'
-            }}>
-              Concierge
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {['Get in Touch', 'Legal Privacy', 'User Agreement', 'Report Concern'].map((item, idx) => (
-                <a key={idx} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="footer-link">
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* Bottom Bar */}
-      <div style={{
-        paddingTop: '1.5rem',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '1rem'
-      }} className="footer-bottom-bar">
-        
-        {/* Left Side */}
-        <p style={{
-          fontSize: '9.5px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.15em',
-          color: 'rgba(255, 255, 255, 0.45)',
-          fontWeight: '600'
+          backgroundColor: '#ffffff',
+          borderRadius: '40px',
+          margin: '8px',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+          boxSizing: 'border-box'
         }}>
-          Curated by @GotInGeorgiG
-        </p>
+          
+          {/* Content Grid Space */}
+          <div style={{
+            padding: '3rem', // Default p-12
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: '3rem',
+            boxSizing: 'border-box'
+          }} className="footer-content-grid">
+            
+            {/* Brand Info Column */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2rem'
+            }} className="brand-col-span">
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <LogoIcon />
+                <span style={{
+                  fontSize: '26px',
+                  fontWeight: '700',
+                  letterSpacing: '-0.02em',
+                  color: '#0F172A',
+                  fontFamily: 'var(--font-display)'
+                }}>
+                  eduNest
+                </span>
+              </div>
 
-        {/* Right Side */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{
-            fontSize: '9.5px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.15em',
-            color: 'rgba(255, 255, 255, 0.45)',
-            fontWeight: '600'
+              <p style={{
+                color: '#64748B',
+                lineHeight: '1.625',
+                fontSize: '16px',
+                fontWeight: '400',
+                maxWidth: '320px',
+                margin: 0
+              }}>
+                Premium strategic solutions designed to elevate your tuition academy presence through advanced management.
+              </p>
+
+              {/* Socials Group */}
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                {socials.map((social, idx) => (
+                  <a 
+                    key={idx}
+                    href={social.url}
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '12px',
+                      border: '1px solid #f1f5f9',
+                      backgroundColor: '#ffffff',
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                      transition: 'all 0.2s',
+                      textDecoration: 'none'
+                    }}
+                    className="social-btn"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+
+            </div>
+
+            {/* Product Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h4 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#94A3B8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                margin: 0
+              }}>
+                Product
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {['Features', 'Solutions', 'Pricing', 'Updates'].map((link) => (
+                  <li key={link}>
+                    <a href={`#${link.toLowerCase()}`} className="footer-card-link">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Science Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h4 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#94A3B8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                margin: 0
+              }}>
+                Science
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {['Approach', 'Identity', 'Research', 'Metrics'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="footer-card-link">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h4 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#94A3B8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                margin: 0
+              }}>
+                Company
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {['About Us', 'Partners', 'Careers'].map((link) => (
+                  <li key={link}>
+                    <a href="#about" className="footer-card-link">
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Bottom Legal Bar */}
+        <div style={{
+          padding: '1.25rem 2rem',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '1.5rem',
+          fontSize: '15px',
+          boxSizing: 'border-box'
+        }} className="bottom-legal-bar">
+          <p style={{ color: '#64748B', fontWeight: '500', margin: 0 }}>
+            © 2026 EduNest. All rights reserved.
+          </p>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2rem',
+            color: '#64748B',
+            fontWeight: '500'
           }}>
-            Join the Journey:
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {[
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>, url: '#music' },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>, url: '#facebook' },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>, url: '#twitter' },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>, url: '#youtube' },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>, url: '#instagram' }
-            ].map((social, idx) => (
-              <a 
-                key={idx} 
-                href={social.url}
-                style={{
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  transition: 'color 0.2s',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                className="social-icon-link"
-              >
-                {social.icon}
-              </a>
-            ))}
+            <a href="#" className="legal-link">Legal Center</a>
+            <div style={{ width: '1px', height: '16px', backgroundColor: '#cbd5e1' }} />
+            <a href="#" className="legal-link">User Agreement</a>
           </div>
         </div>
 
       </div>
 
       <style>{`
-        .col-span-12 {
-          grid-column: span 12 / span 12;
-        }
-        @media (min-width: 768px) {
-          .footer-top-grid {
-            gap: 3rem !important;
-          }
-          .col-span-12.md\\:col-span-5 {
-            grid-column: span 5 / span 5 !important;
-          }
-          .col-span-12.md\\:col-span-7 {
-            grid-column: span 7 / span 7 !important;
-          }
-        }
-        @media (max-width: 767px) {
-          .footer-top-grid {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 2rem !important;
-          }
-          .links-grid {
-            grid-template-columns: 1fr !important;
-            gap: 1.5rem !important;
-          }
-          .footer-bottom-bar {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 1rem !important;
-          }
-        }
-        .footer-link {
-          font-size: 11.5px;
-          color: rgba(255, 255, 255, 0.55);
+        .footer-card-link {
+          font-size: 15px;
+          font-weight: 500;
+          color: #1E293B;
           text-decoration: none;
           transition: color 0.2s;
-          font-weight: 500;
         }
-        .footer-link:hover {
-          color: #ffffff !important;
-        }
-        .social-icon-link:hover {
+        .footer-card-link:hover {
           color: #ef4d23 !important;
         }
+        .legal-link {
+          color: #64748B;
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+        .legal-link:hover {
+          color: #1E293B !important;
+        }
+        .social-btn:hover {
+          background-color: #f8fafc !important;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+        }
+        .social-btn:active {
+          transform: scale(0.95);
+        }
+        @media (min-width: 1024px) {
+          .brand-col-span {
+            grid-column: span 2 / span 2 !important;
+          }
+          .footer-content-grid {
+            grid-template-columns: repeat(5, 1fr) !important;
+            padding: 3rem 4rem !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .footer-content-grid {
+            grid-template-columns: 1fr !important;
+            padding: 2.25rem 2rem !important;
+            gap: 2.5rem !important;
+          }
+          .bottom-legal-bar {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            padding: 1.5rem !important;
+          }
+        }
       `}</style>
-    </motion.footer>
+    </div>
+  );
+}
+
+// Component 3: GlassText
+function GlassText() {
+  return (
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      userSelect: 'none',
+      paddingTop: 0,
+      boxSizing: 'border-box',
+      overflow: 'hidden'
+    }}>
+      
+      {/* Invisible SVG filter setup */}
+      <svg className="absolute w-0 h-0" aria-hidden="true" focusable="false" style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="glass-effect" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000000" floodOpacity="0.25" result="outer-shadow"/>
+            <feComponentTransfer in="SourceAlpha" result="alpha">
+              <feFuncA type="linear" slope="1" />
+            </feComponentTransfer>
+            <feOffset in="alpha" dx="0" dy="4" result="offset-white" />
+            <feGaussianBlur in="offset-white" stdDeviation="4" result="blur-white" />
+            <feComposite in="alpha" in2="blur-white" operator="out" result="inner-white-mask" />
+            <feFlood floodColor="#ffffff" floodOpacity="0.25" result="white-fill" />
+            <feComposite in="white-fill" in2="inner-white-mask" operator="in" result="inner-white-final" />
+            <feGaussianBlur in="alpha" stdDeviation="6" result="blur-black" />
+            <feComposite in="alpha" in2="blur-black" operator="out" result="inner-black-mask" />
+            <feFlood floodColor="#000000" floodOpacity="0.25" result="black-fill" />
+            <feComposite in="black-fill" in2="inner-black-mask" operator="in" result="inner-black-final" />
+            <feMerge>
+              <feMergeNode in="outer-shadow" />
+              <feMergeNode in="SourceGraphic" />
+              <feMergeNode in="inner-white-final" />
+              <feMergeNode in="inner-black-final" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Motion text backdrop */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+        style={{ position: 'relative' }}
+      >
+        <h1 
+          className="select-none text-white text-center"
+          style={{
+            fontSize: 'min(22vw, 320px)',
+            fontWeight: '800',
+            letterSpacing: '-0.04em',
+            lineHeight: '0.85',
+            margin: 0,
+            padding: '0 1rem',
+            filter: 'url(#glass-effect)',
+            fontFamily: 'var(--font-display)',
+            textTransform: 'lowercase'
+          }}
+        >
+          edunest
+        </h1>
+      </motion.div>
+
+    </div>
+  );
+}
+
+// Final Default Export
+export default function Footer() {
+  return (
+    <footer style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 0,
+      marginTop: '6rem',
+      boxSizing: 'border-box'
+    }}>
+      <FooterCard />
+      <GlassText />
+    </footer>
   );
 }
