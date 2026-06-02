@@ -18,15 +18,7 @@ export default function CommunityChat({ customBatches = null }) {
   
   const messagesEndRef = useRef(null);
 
-  // Auto scroll to bottom
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
-  // Scroll to bottom only when selecting a different batch channel
-  useEffect(() => {
-    scrollToBottom();
-  }, [selectedBatch]);
 
   // 1. Fetch channels/batches based on user role
   useEffect(() => {
@@ -146,7 +138,6 @@ export default function CommunityChat({ customBatches = null }) {
       } else {
         // Refresh messages list
         fetchMessages(selectedBatch.id);
-        setTimeout(scrollToBottom, 100);
       }
     } catch (err) {
       console.error('Failed to dispatch message:', err);
