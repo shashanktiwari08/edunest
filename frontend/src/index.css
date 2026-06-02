@@ -610,20 +610,29 @@ input:checked + .toggle-slider:before {
   /* Layout Changes */
   .app-container {
     flex-direction: column;
+    padding: 6px;
+  }
+
+  .main-content {
+    padding-left: 0;
   }
 
   .header {
     padding: 0 1.25rem;
     height: 64px;
     border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+    border-radius: 12px;
   }
 
   .header h1 {
-    font-size: 1.2rem !important;
+    font-size: 1.15rem !important;
   }
 
   .content-pane {
-    padding: 1.25rem;
+    padding: 1rem;
+    border-radius: 16px;
+    margin-bottom: 8px;
   }
 
   /* Slide-in Mobile Sidebar Drawer Overlay */
