@@ -55,7 +55,7 @@ export default function PricingSection({ onBuyNow }) {
   ];
 
   return (
-    <div id="pricing" style={{ padding: '4rem 1.25rem', width: '100%' }} className="sm:py-24">
+    <div id="pricing" style={{ padding: '3.5rem 1rem', width: '100%' }} className="pricing-root">
       <div style={{ maxWidth: '1024px', margin: '0 auto', textAlign: 'center', marginBottom: '3.5rem' }}>
         <span className="badge badge-accent" style={{ marginBottom: '0.75rem', fontSize: '13px' }}>
           Affordable SaaS Subscriptions
@@ -84,8 +84,8 @@ export default function PricingSection({ onBuyNow }) {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '2rem',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+        gap: '1.5rem',
         maxWidth: '1024px',
         margin: '0 auto',
         alignItems: 'stretch'
@@ -196,6 +196,9 @@ export default function PricingSection({ onBuyNow }) {
       </div>
 
       <style>{`
+        .pricing-root {
+          padding: 3.5rem 1rem;
+        }
         .pricing-card {
           transform: scale(1);
         }
@@ -204,13 +207,13 @@ export default function PricingSection({ onBuyNow }) {
           border-color: #ef4d23 !important;
           box-shadow: 0 20px 30px rgba(239, 77, 35, 0.08) !important;
         }
-        .pricing-card-popular {
-          /* subtle unique visual indicators for popular tier cards if needed */
-        }
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
+          .pricing-root {
+            padding: 2.5rem 0.875rem !important;
+          }
           .pricing-card {
             transform: none !important;
-            padding: 1.75rem 1.5rem !important;
+            padding: 1.5rem 1.25rem !important;
           }
           .pricing-card:hover {
             transform: none !important;

@@ -123,22 +123,23 @@ export default function App() {
         minHeight: '100vh',
         width: '100%',
         backgroundColor: '#ededed',
-        padding: '12px',
-        fontFamily: 'Inter, sans-serif'
-      }} className="sm:p-4 font-inter">
+        padding: '6px',
+        fontFamily: 'Inter, sans-serif',
+        overflowX: 'hidden'
+      }} className="landing-outer">
         
         {/* HERO CONTAINER CLIPS EVERYTHING INSIDE */}
         <div id="home" style={{
           position: 'relative',
           width: '100%',
-          height: 'calc(100vh - 24px)',
+          height: 'calc(100svh - 12px)',
           overflowX: 'hidden',
           overflowY: 'auto',
           backgroundColor: '#d9d9d9',
-          borderRadius: '16px',
+          borderRadius: '20px',
           display: 'flex',
           flexDirection: 'column'
-        }} className="sm:h-[calc(100vh-32px)] sm:rounded-3xl premium-scroll">
+        }} className="premium-scroll hero-container">
           
           {/* Hero Background Image - Education & Classroom Vibe */}
           <img
@@ -271,17 +272,17 @@ export default function App() {
           </div>
         </div>
         {/* Features Section */}
-        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
+        <div className="landing-section scroll-animate">
           <FeaturesSection />
         </div>
 
         {/* About Section */}
-        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
+        <div className="landing-section scroll-animate">
           <AboutSection />
         </div>
 
         {/* Pricing Section (Below Hero, fully visible on scroll) */}
-        <div style={{ marginTop: '2rem', backgroundColor: '#ffffff', borderRadius: '24px', padding: '1rem' }} className="sm:p-6 scroll-animate">
+        <div className="landing-section scroll-animate">
           <PricingSection onBuyNow={handleOpenSubscribeModal} />
         </div>
 

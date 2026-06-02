@@ -77,7 +77,7 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <div id="features" style={{ padding: '5rem 1.25rem', width: '100%' }} className="sm:py-24 scroll-animate">
+    <div id="features" style={{ padding: '4rem 1rem', width: '100%' }} className="scroll-animate features-root">
       
       {/* Header */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center', marginBottom: '4rem' }}>
@@ -193,7 +193,7 @@ export default function FeaturesSection() {
         }} />
 
         {/* Hero image banner with fade-out bottom */}
-        <div style={{ position: 'relative', width: '100%', height: '320px', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', width: '100%', height: '320px', overflow: 'hidden' }} className="dark-section-image">
           <img
             src="/edu-hero.png"
             alt="EduNest education platform"
@@ -244,7 +244,7 @@ export default function FeaturesSection() {
           zIndex: 0
         }} />
 
-        <div style={{ position: 'relative', padding: '0 3rem 4rem', zIndex: 1, marginTop: '-40px' }}>
+        <div style={{ position: 'relative', padding: '0 3rem 4rem', zIndex: 1, marginTop: '-40px' }} className="dark-section-inner">
           
           {/* Section heading */}
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
@@ -324,7 +324,7 @@ export default function FeaturesSection() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '1.5rem'
-          }}>
+          }} className="usecase-cards-grid">
             {usecases.map((use, idx) => (
               <div
                 key={idx}
@@ -420,6 +420,9 @@ export default function FeaturesSection() {
       </div>
 
       <style>{`
+        .features-root {
+          padding: 4rem 1rem;
+        }
         .feature-card:hover {
           transform: translateY(-6px);
           border-color: rgba(239, 77, 35, 0.2) !important;
@@ -439,9 +442,36 @@ export default function FeaturesSection() {
           0%, 100% { box-shadow: 0 0 6px rgba(239,77,35,0.8); }
           50% { box-shadow: 0 0 14px rgba(239,77,35,1); }
         }
+        /* Stats bar: 2-col at ≤600px, 1-col at ≤400px */
         @media (max-width: 600px) {
           .stats-grid-mobile {
             grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .features-root {
+            padding: 2.5rem 0.875rem !important;
+          }
+          .dark-section-inner {
+            padding: 0 1.25rem 2.5rem !important;
+          }
+          .dark-section-image {
+            height: 220px !important;
+          }
+          .usecase-cards-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .feature-card:hover {
+            transform: none !important;
+          }
+          .usecase-dark-card:hover {
+            transform: none !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .stats-grid-mobile {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .dark-section-image {
+            height: 180px !important;
           }
         }
       `}</style>

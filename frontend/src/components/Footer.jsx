@@ -268,14 +268,25 @@ function FooterCard() {
         @media (max-width: 768px) {
           .footer-content-grid {
             grid-template-columns: 1fr !important;
-            padding: 2.25rem 2rem !important;
-            gap: 2.5rem !important;
+            padding: 2rem 1.5rem !important;
+            gap: 2rem !important;
           }
           .bottom-legal-bar {
             flex-direction: column !important;
             align-items: center !important;
             text-align: center !important;
-            padding: 1.5rem !important;
+            padding: 1.25rem 1rem !important;
+            gap: 0.75rem !important;
+            font-size: 13px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .footer-content-grid {
+            padding: 1.5rem 1rem !important;
+            gap: 1.75rem !important;
+          }
+          .footer-card-link {
+            font-size: 14px;
           }
         }
       `}</style>

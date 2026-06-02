@@ -545,6 +545,25 @@ input:checked + .toggle-slider:before {
   padding: 2.5rem;
 }
 
+/* ======================================================== */
+/* --- LANDING PAGE LAYOUT CLASSES ---                      */
+/* ======================================================== */
+
+.landing-outer {
+  padding: 6px;
+}
+
+.landing-section {
+  margin-top: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.hero-container {
+  border-radius: 20px;
+}
+
 /* Grid Layouts */
 .grid-3 {
   display: grid;
@@ -553,7 +572,7 @@ input:checked + .toggle-slider:before {
 }
 .grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
   gap: 2rem;
 }
 .mt-4 { margin-top: 1rem; }
@@ -596,6 +615,7 @@ input:checked + .toggle-slider:before {
 /* --- PREMIUM MOBILE RESPONSIVE MEDIA QUERIES ---         */
 /* ======================================================== */
 
+/* ---- LARGE TABLET (≤1024px) ---- */
 @media (max-width: 1024px) {
   .grid-2 {
     grid-template-columns: 1fr;
@@ -606,36 +626,46 @@ input:checked + .toggle-slider:before {
   }
 }
 
+/* ---- TABLET / MOBILE (≤768px) ---- */
 @media (max-width: 768px) {
-  /* Layout Changes */
-  .app-container {
-    flex-direction: column;
-    padding: 6px;
+
+  /* ── Landing page wrapper ── */
+  .landing-outer {
+    padding: 4px !important;
+  }
+  .landing-section {
+    margin-top: 1rem;
+    border-radius: 16px;
+  }
+  .hero-container {
+    border-radius: 16px !important;
+    height: calc(100svh - 8px) !important;
   }
 
+  /* ── Dashboard App Layout ── */
+  .app-container {
+    flex-direction: column;
+    padding: 4px;
+  }
   .main-content {
     padding-left: 0;
   }
-
   .header {
-    padding: 0 1.25rem;
-    height: 64px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
+    padding: 0 1rem;
+    height: 60px;
     border-radius: 12px;
+    margin-bottom: 6px;
   }
-
   .header h1 {
-    font-size: 1.15rem !important;
+    font-size: 1.05rem !important;
   }
-
   .content-pane {
-    padding: 1rem;
+    padding: 0.875rem;
     border-radius: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
-  /* Slide-in Mobile Sidebar Drawer Overlay */
+  /* ── Slide-in Mobile Sidebar Drawer ── */
   .sidebar {
     position: fixed;
     top: 0;
@@ -647,13 +677,10 @@ input:checked + .toggle-slider:before {
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
     box-shadow: none;
   }
-
   .sidebar.active {
     transform: translateX(280px);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
   }
-
-  /* Backdrop blur layer for overlay drawer */
   .sidebar-backdrop {
     display: none;
     position: fixed;
@@ -664,55 +691,51 @@ input:checked + .toggle-slider:before {
     z-index: 999;
     animation: fade-in 0.25s ease;
   }
-
   .sidebar-backdrop.active {
     display: block;
   }
+  .mobile-menu-btn { display: flex !important; }
+  .mobile-close-btn { display: flex !important; }
 
-  /* Toggle Button visibilities */
-  .mobile-menu-btn {
-    display: flex !important;
-  }
-
-  .mobile-close-btn {
-    display: flex !important;
-  }
-
-  /* Card layouts and spacing tweaks */
+  /* ── Cards ── */
   .card {
-    padding: 1.25rem;
+    padding: 1.125rem !important;
   }
 
+  /* ── Stat grids ── */
   .dashboard-stat-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
   }
 
-  /* Table readability on mobile (adds fluid scrolling) */
+  /* ── Grids ── */
+  .grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Tables ── */
   .table th, .table td {
-    padding: 0.875rem 1rem;
-    font-size: 0.875rem;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.825rem;
   }
 
-  /* Fluid checklist and button sizes for optimal mobile touch targets */
+  /* ── Buttons ── */
   .btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.95rem;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
   }
-
   .btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
   }
 
-  /* Attendance checklist toggles row wrap for small screens */
+  /* ── Attendance ── */
   .attendance-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
-    padding: 1rem;
+    padding: 0.875rem;
   }
-
   .attendance-toggles {
     width: 100%;
     justify-content: space-between;
@@ -720,9 +743,43 @@ input:checked + .toggle-slider:before {
     border-top: 1px solid var(--border);
     padding-top: 0.75rem;
   }
-
   .toggle-label {
     font-size: 0.875rem;
+  }
+}
+
+/* ---- SMALL PHONE (≤480px) ---- */
+@media (max-width: 480px) {
+
+  /* ── Landing wrapper ── */
+  .landing-outer {
+    padding: 0 !important;
+  }
+  .landing-section {
+    border-radius: 0 !important;
+    margin-top: 0.75rem;
+  }
+  .hero-container {
+    border-radius: 0 !important;
+    height: 100svh !important;
+  }
+
+  /* ── Stat grid goes 1-col ── */
+  .dashboard-stat-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  /* ── Header tighter ── */
+  .header {
+    padding: 0 0.875rem;
+    height: 56px;
+    border-radius: 10px;
+  }
+
+  /* ── Content pane ── */
+  .content-pane {
+    padding: 0.75rem;
   }
 }
 
