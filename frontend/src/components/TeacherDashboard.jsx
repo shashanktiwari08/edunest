@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import { Users, BookOpen, Radio, Calendar, CheckSquare, PlusCircle, MessageSquare } from 'lucide-react';
+import { Users, BookOpen, Radio, Calendar, CheckSquare, PlusCircle, MessageSquare, Clock } from 'lucide-react';
 import CommunityChat from './CommunityChat';
 
 const API_BASE = import.meta.env.VITE_API_URL 
@@ -422,7 +422,7 @@ export default function TeacherDashboard() {
               💡 Click on any scheduled lecture box below to open the student roll-call register. You can log or view attendance at any time!
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', maxHeight: '320px', overflowY: 'auto', padding: '0.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem', maxHeight: '350px', overflowY: 'auto', padding: '0.25rem' }}>
               {lectures.map((l) => {
                 const isActive = attLectureId === l.id;
                 return (
@@ -434,26 +434,51 @@ export default function TeacherDashboard() {
                     }}
                     style={{
                       cursor: 'pointer',
-                      padding: '1.25rem',
-                      border: isActive ? '2px solid var(--accent)' : '1px solid var(--border)',
-                      background: isActive ? 'var(--accent-light)' : 'var(--bg-primary)',
-                      borderRadius: '12px',
-                      transition: 'var(--transition)',
-                      boxShadow: isActive ? 'var(--shadow-premium)' : 'none',
-                      animation: 'fade-in 0.25s ease'
+                      padding: '1.5rem',
+                      border: isActive ? '2.5px solid #ef4d23' : '1px solid #cbd5e1',
+                      background: isActive ? 'rgba(239, 77, 35, 0.05)' : '#ffffff',
+                      borderRadius: '16px',
+                      transition: 'all 0.2s ease',
+                      boxShadow: isActive ? '0 10px 20px rgba(239, 77, 35, 0.08)' : '0 2px 8px rgba(0,0,0,0.01)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.75rem',
+                      boxSizing: 'border-box'
                     }}
-                    className="checklist-item"
+                    className="lecture-select-card"
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                      <span className="badge badge-accent" style={{ textTransform: 'none' }}>{l.batch_name}</span>
-                      <strong style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{l.date}</strong>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                      <span className="badge badge-accent" style={{ textTransform: 'none', fontSize: '10px' }}>
+                        {l.batch_name}
+                      </span>
+                      <strong style={{ fontSize: '11px', color: '#64748b' }}>📅 {l.date}</strong>
                     </div>
-                    <h3 style={{ fontSize: '1.1rem', margin: '0.25rem 0', color: isActive ? 'var(--accent)' : 'var(--text-main)', fontFamily: 'var(--font-display)' }}>
+                    
+                    <h3 style={{ 
+                      fontSize: '15px', 
+                      fontWeight: '800', 
+                      margin: '0.25rem 0', 
+                      color: isActive ? '#ef4d23' : '#0f172a', 
+                      fontFamily: 'var(--font-display)',
+                      lineHeight: '1.4'
+                    }}>
                       {l.topic}
                     </h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                      🕒 Window: {l.start_time.substring(0, 5)} - {l.end_time.substring(0, 5)}
-                    </p>
+                    
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '6px', 
+                      fontSize: '11px', 
+                      color: '#475569', 
+                      backgroundColor: '#f1f5f9', 
+                      padding: '6px 10px', 
+                      borderRadius: '8px',
+                      width: 'fit-content'
+                    }}>
+                      <Clock size={12} style={{ color: isActive ? '#ef4d23' : '#64748b' }} />
+                      <span style={{ fontWeight: '600' }}>Window: {l.start_time.substring(0, 5)} - {l.end_time.substring(0, 5)}</span>
+                    </div>
                   </div>
                 );
               })}
