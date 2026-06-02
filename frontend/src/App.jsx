@@ -12,7 +12,7 @@ import AboutSection from './components/AboutSection';
 import Footer from './components/Footer';
 import { 
   Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock, 
-  ChevronRight, X, Mail, Menu 
+  ChevronRight, X, Mail, Menu, Award 
 } from 'lucide-react';
 
 export default function App() {
@@ -40,6 +40,12 @@ export default function App() {
     if (roleName === 'admin') {
       setMobileNumber('9999999999');
       setPassword('admin123');
+    } else if (roleName === 'teacher') {
+      setMobileNumber('8888888888');
+      setPassword('teacher123');
+    } else if (roleName === 'student') {
+      setMobileNumber('7777777777');
+      setPassword('student123');
     }
   };
 
@@ -418,13 +424,30 @@ export default function App() {
                       System Demo Logins
                     </span>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <button 
                           className="btn btn-secondary btn-sm" 
-                          style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }} 
+                          style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }} 
                           onClick={() => handlePreFill('admin')}
+                          type="button"
                         >
-                          <Shield size={12} style={{ marginRight: '0.25rem' }} /> Auto-fill System Admin
+                          <Shield size={12} style={{ marginRight: '0.25rem' }} /> Admin
+                        </button>
+                        <button 
+                          className="btn btn-secondary btn-sm" 
+                          style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }} 
+                          onClick={() => handlePreFill('teacher')}
+                          type="button"
+                        >
+                          <Award size={12} style={{ marginRight: '0.25rem' }} /> Teacher
+                        </button>
+                        <button 
+                          className="btn btn-secondary btn-sm" 
+                          style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }} 
+                          onClick={() => handlePreFill('student')}
+                          type="button"
+                        >
+                          <GraduationCap size={12} style={{ marginRight: '0.25rem' }} /> Student
                         </button>
                       </div>
                       <div style={{ 
