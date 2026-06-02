@@ -333,7 +333,7 @@ function GlassText() {
         style={{ position: 'relative' }}
       >
         <h1 
-          className="select-none text-white text-center"
+          className="select-none text-center"
           style={{
             fontSize: 'min(22vw, 320px)',
             fontWeight: '800',
@@ -341,9 +341,12 @@ function GlassText() {
             lineHeight: '0.85',
             margin: 0,
             padding: '0 1rem',
-            filter: 'url(#glass-effect)',
             fontFamily: 'var(--font-display)',
-            textTransform: 'lowercase'
+            textTransform: 'lowercase',
+            background: 'linear-gradient(135deg, #ef4d23 0%, #8b5cf6 50%, #2563eb 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            filter: 'drop-shadow(0px 15px 30px rgba(239, 77, 35, 0.18))'
           }}
         >
           edunest
