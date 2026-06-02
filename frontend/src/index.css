@@ -113,129 +113,143 @@ a:hover {
 .app-container {
   display: flex;
   min-height: 100vh;
+  background-color: #ededed; /* Warm canvas gray matching the landing page backdrop */
+  padding: 12px;
 }
 
 .sidebar {
   width: 280px;
-  background-color: var(--bg-surface);
-  border-right: 1px solid var(--border);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 24px; /* Floating rounded sidebar panel matching front page vibes */
   display: flex;
   flex-direction: column;
-  padding: 2rem 1.5rem;
-  height: 100vh;
+  padding: 2.25rem 1.5rem;
+  height: calc(100vh - 24px);
   position: sticky;
-  top: 0;
+  top: 12px;
   transition: var(--transition);
   z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Prevents flex children from stretching */
+  min-width: 0;
+  padding-left: 12px;
 }
 
 .header {
-  height: 70px;
-  background-color: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
+  height: 74px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px; /* Rounded floating header */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2.5rem;
+  padding: 0 2rem;
+  margin-bottom: 12px;
   position: sticky;
-  top: 0;
+  top: 12px;
   z-index: 90;
   transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
 }
 
 .content-pane {
-  padding: 2.5rem;
+  background-color: #d9d9d9; /* Deep nested card body canvas */
+  border-radius: 24px;
+  border: 1px solid #cbd5e1;
+  padding: 2rem;
   flex: 1;
   overflow-y: auto;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
 }
 
 /* --- Premium UI Components --- */
 
-/* Glass Cards */
+/* Layered Cards */
 .card {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
-  transition: var(--transition);
+  background: #ffffff !important; /* Pure high contrast white cards */
+  border: 1px solid #e2e8f0;
+  border-radius: 24px !important; /* Uniform thick rounded corners */
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.01) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative;
   overflow: hidden;
+  color: #0f172a !important; /* High contrast text */
 }
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
-  border-color: var(--accent);
+  transform: translateY(-4px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04) !important;
+  border-color: #ef4d23 !important; /* Brand accent orange glow */
 }
 
 /* Status Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
-.badge-success { background-color: var(--success-light); color: var(--success); }
-.badge-warning { background-color: var(--warning-light); color: var(--warning); }
-.badge-danger { background-color: var(--danger-light); color: var(--danger); }
-.badge-accent { background-color: var(--accent-light); color: var(--accent); }
+.badge-success { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-warning { background-color: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+.badge-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+.badge-accent { background-color: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
 
 /* Inputs and Forms */
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 .form-label {
   display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #334155;
 }
 .form-control {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-main);
+  padding: 0.85rem 1.15rem;
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 12px !important; /* Thick rounded inputs */
+  color: #0f172a !important;
   outline: none;
+  font-weight: 600;
+  font-size: 13px;
   transition: var(--transition);
 }
 .form-control:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-light);
+  border-color: #ef4d23 !important;
+  box-shadow: 0 0 0 3px rgba(239, 77, 35, 0.15) !important;
 }
 select.form-control {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23334155'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  background-size: 1.25rem;
+  background-size: 1.1rem;
   padding-right: 2.5rem;
 }
 
 /* Checklist Filter directory */
 .checklist-container {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  max-height: 200px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  max-height: 220px;
   overflow-y: auto;
   padding: 0.75rem;
-  background-color: var(--bg-primary);
+  background-color: #ffffff;
 }
 .checklist-item {
   display: flex;
