@@ -31,8 +31,9 @@ export const SocketProvider = ({ children }) => {
       return;
     }
 
-    // Connect to WebSocket server with student ID as URL parameter
-    const wsUrl = `ws://localhost:5000?userId=${user.id}`;
+    const baseApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const wsBase = baseApiUrl.replace(/^http/, 'ws');
+    const wsUrl = `${wsBase}?userId=${user.id}`;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 

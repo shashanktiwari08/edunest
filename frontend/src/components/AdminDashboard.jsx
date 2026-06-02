@@ -3,7 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { UserPlus, IndianRupee, Calendar, Check, X, ShieldAlert, Award, Lock, KeyRound, ChevronRight, Smartphone } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api` 
+  : 'http://localhost:5000/api';
 
 export default function AdminDashboard() {
   const { token } = useAuth();
