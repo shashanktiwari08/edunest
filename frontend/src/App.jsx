@@ -4,11 +4,14 @@ import { useTheme } from './context/ThemeContext';
 import AdminDashboard from './components/AdminDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import StudentDashboard from './components/StudentDashboard';
-import { Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock } from 'lucide-react';
+import { Sun, Moon, LogOut, Shield, GraduationCap, School, LogIn, Smartphone, Lock, Menu, X } from 'lucide-react';
 
 export default function App() {
   const { user, loading, login, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+
+  // Responsive mobile sidebar control
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Login inputs
   const [mobileNumber, setMobileNumber] = useState('');
@@ -181,29 +184,51 @@ export default function App() {
   return (
     <div className="app-container">
       {/* SIDEBAR NAVIGATION */}
-      <aside className="sidebar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2.5rem' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            backgroundColor: 'var(--accent)',
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <School size={22} />
+      <div 
+        className={`sidebar-backdrop ${mobileSidebarOpen ? 'active' : ''}`} 
+        onClick={() => setMobileSidebarOpen(false)}
+      />
+      <aside className={`sidebar ${mobileSidebarOpen ? 'active' : ''}`}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              backgroundColor: 'var(--accent)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <School size={22} />
+            </div>
+            <span style={{
+              fontSize: '1.25rem',
+              fontFamily: 'var(--font-display)',
+              fontWeight: '800',
+              color: 'var(--text-main)',
+              letterSpacing: '-0.02em'
+            }}>
+              EduNest
+            </span>
           </div>
-          <span style={{
-            fontSize: '1.25rem',
-            fontFamily: 'var(--font-display)',
-            fontWeight: '800',
-            color: 'var(--text-main)',
-            letterSpacing: '-0.02em'
-          }}>
-            EduNest
-          </span>
+          <button 
+            className="btn btn-secondary mobile-close-btn"
+            onClick={() => setMobileSidebarOpen(false)}
+            style={{ 
+              width: '32px', 
+              height: '32px', 
+              padding: 0, 
+              borderRadius: '50%',
+              display: 'none', // Shown only on mobile screens via CSS
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderColor: 'var(--border)'
+            }}
+          >
+            <X size={16} />
+          </button>
         </div>
 
         {/* User Card inside Sidebar */}
@@ -241,7 +266,25 @@ export default function App() {
       {/* CORE FRAMEWORK INTERFACE */}
       <main className="main-content">
         <header className="header">
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="btn btn-secondary mobile-menu-btn"
+              style={{
+                width: '42px',
+                height: '42px',
+                padding: 0,
+                borderRadius: '8px',
+                display: 'none', // Shown only on mobile screens via CSS
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'var(--shadow)',
+                marginRight: '0.75rem',
+                borderColor: 'var(--border)'
+              }}
+            >
+              <Menu size={20} />
+            </button>
             <h1 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)' }}>
               {user.role === 'admin' && 'Ecosystem Operations Console'}
               {user.role === 'teacher' && 'Academic Operations Center'}

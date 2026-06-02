@@ -573,3 +573,134 @@ input:checked + .toggle-slider:before {
   color: var(--text-muted);
   font-weight: 500;
 }
+
+/* ======================================================== */
+/* --- PREMIUM MOBILE RESPONSIVE MEDIA QUERIES ---         */
+/* ======================================================== */
+
+@media (max-width: 1024px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  /* Layout Changes */
+  .app-container {
+    flex-direction: column;
+  }
+
+  .header {
+    padding: 0 1.25rem;
+    height: 64px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header h1 {
+    font-size: 1.2rem !important;
+  }
+
+  .content-pane {
+    padding: 1.25rem;
+  }
+
+  /* Slide-in Mobile Sidebar Drawer Overlay */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
+    box-shadow: none;
+  }
+
+  .sidebar.active {
+    transform: translateX(280px);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Backdrop blur layer for overlay drawer */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(11, 15, 25, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999;
+    animation: fade-in 0.25s ease;
+  }
+
+  .sidebar-backdrop.active {
+    display: block;
+  }
+
+  /* Toggle Button visibilities */
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .mobile-close-btn {
+    display: flex !important;
+  }
+
+  /* Card layouts and spacing tweaks */
+  .card {
+    padding: 1.25rem;
+  }
+
+  .dashboard-stat-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Table readability on mobile (adds fluid scrolling) */
+  .table th, .table td {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Fluid checklist and button sizes for optimal mobile touch targets */
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Attendance checklist toggles row wrap for small screens */
+  .attendance-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .attendance-toggles {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+  }
+
+  .toggle-label {
+    font-size: 0.875rem;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
