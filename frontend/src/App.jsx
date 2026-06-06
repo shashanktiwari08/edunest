@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const { user, loading, login, logout } = useAuth();
+  const { user, loading, login, register, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   // Responsive mobile sidebar control (internal logged-in view)
@@ -34,6 +34,9 @@ export default function App() {
   const [name, setName] = useState('');
   const [loginError, setLoginError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [subscribeStep, setSubscribeStep] = useState('account'); // 'account' | 'payment' | 'verifying' | 'success'
+  const [transactionId, setTransactionId] = useState('');
+  const [copied, setCopied] = useState(false);
 
   // Pre-fill credentials helper for instant evaluation
   const handlePreFill = (roleName) => {
@@ -71,23 +74,59 @@ export default function App() {
     }
   };
 
-  const handleSubscribeSubmit = (e) => {
+  const handleAccountDetailsSubmit = (e) => {
     e.preventDefault();
     setLoginError('');
     
-    if (!emailAddress || !password || !name) {
-      setLoginError('All fields are required.');
+    if (!name || !mobileNumber || !password) {
+      setLoginError('Full name, mobile number and password are required.');
       return;
     }
 
-    // Simulate buying subscription
+    setSubscribeStep('payment');
+  };
+
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    setLoginError('');
     setSubmitting(true);
-    setTimeout(() => {
+    setSubscribeStep('verifying');
+
+    const amount = parseInt(selectedPlan?.price.replace(/[^0-9]/g, ''), 10) || 999;
+    
+    try {
+      const result = await register(
+        name,
+        mobileNumber,
+        password,
+        selectedPlan?.name || 'Starter Plan',
+        amount,
+        transactionId
+      );
+
+      if (result.success) {
+        setSubscribeStep('success');
+        setSubmitting(false);
+        // Let user see the success state for 2.5 seconds before closing the modal
+        setTimeout(() => {
+          setAuthModalOpen(false);
+          // Reset states
+          setName('');
+          setMobileNumber('');
+          setPassword('');
+          setEmailAddress('');
+          setTransactionId('');
+        }, 2500);
+      } else {
+        setSubscribeStep('payment');
+        setSubmitting(false);
+        setLoginError(result.error || 'Registration failed. Please check details or try again.');
+      }
+    } catch (err) {
+      setSubscribeStep('payment');
       setSubmitting(false);
-      setAuthMode('login');
-      setLoginError('');
-      alert(`🎉 Membership purchased successfully! You can now log in using your credentials.\nDemo Admin mobile number 9999999999 / admin123 is pre-configured for evaluation.`);
-    }, 1500);
+      setLoginError('Error connecting to registration server. Please try again.');
+    }
   };
 
   const handleOpenLoginModal = () => {
@@ -98,6 +137,13 @@ export default function App() {
   const handleOpenSubscribeModal = (plan) => {
     setSelectedPlan(plan);
     setAuthMode('subscribe');
+    setSubscribeStep('account');
+    setMobileNumber('');
+    setPassword('');
+    setName('');
+    setEmailAddress('');
+    setTransactionId('');
+    setLoginError('');
     setAuthModalOpen(true);
   };
 
@@ -472,91 +518,312 @@ export default function App() {
                 </>
               ) : (
                 <>
-                  {/* Subscribe/Membership Mode */}
-                  <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <span className="badge badge-accent" style={{ marginBottom: '0.5rem' }}>
-                      {selectedPlan?.name || 'Subscription Tier'}
-                    </span>
-                    <h1 style={{ fontSize: '1.75rem', fontFamily: 'var(--font-display)', marginBottom: '0.25rem', color: '#111827' }}>
-                      Join EduNest Premium
-                    </h1>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                      Complete your details to purchase membership access
-                    </p>
-                  </div>
+                  <style>{`
+                    @keyframes spin {
+                      to { transform: rotate(360deg); }
+                    }
+                  `}</style>
+                  {subscribeStep === 'account' && (
+                    <>
+                      {/* Step 1 Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <span className="badge badge-accent" style={{ marginBottom: '0.5rem' }}>
+                          Step 1 of 2: Create Account
+                        </span>
+                        <h1 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)', marginBottom: '0.25rem', color: '#111827' }}>
+                          Join {selectedPlan?.name || 'EduNest'}
+                        </h1>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                          Create your credentials for tuition academy management
+                        </p>
+                      </div>
 
-                  {loginError && (
-                    <div style={{
-                      padding: '0.75rem',
-                      backgroundColor: 'var(--danger-light)',
-                      color: 'var(--danger)',
-                      borderRadius: '6px',
-                      fontSize: '0.85rem',
-                      fontWeight: '500',
-                      marginBottom: '1rem',
-                      textAlign: 'center'
-                    }}>
-                      {loginError}
+                      {loginError && (
+                        <div style={{
+                          padding: '0.75rem',
+                          backgroundColor: 'var(--danger-light)',
+                          color: 'var(--danger)',
+                          borderRadius: '6px',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          marginBottom: '1rem',
+                          textAlign: 'center'
+                        }}>
+                          {loginError}
+                        </div>
+                      )}
+
+                      <form onSubmit={handleAccountDetailsSubmit}>
+                        <div className="form-group" style={{ marginBottom: '1rem' }}>
+                          <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Full Name / Academy Name</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            style={{ backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
+                            placeholder="e.g. Apex Tuition Center"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <div className="form-group" style={{ position: 'relative', marginBottom: '1rem' }}>
+                          <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Mobile Number (Used as Login ID)</label>
+                          <input
+                            type="tel"
+                            className="form-control"
+                            style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
+                            placeholder="e.g. 9876543210"
+                            value={mobileNumber}
+                            onChange={(e) => setMobileNumber(e.target.value)}
+                            required
+                          />
+                          <Smartphone 
+                            size={16} 
+                            style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
+                          />
+                        </div>
+
+                        <div className="form-group" style={{ position: 'relative', marginBottom: '1rem' }}>
+                          <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Email Address</label>
+                          <input
+                            type="email"
+                            className="form-control"
+                            style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
+                            placeholder="e.g. owner@academy.com"
+                            value={emailAddress}
+                            onChange={(e) => setEmailAddress(e.target.value)}
+                            required
+                          />
+                          <Mail 
+                            size={16} 
+                            style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
+                          />
+                        </div>
+
+                        <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                          <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Choose Password</label>
+                          <input
+                            type="password"
+                            className="form-control"
+                            style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                          />
+                          <Lock 
+                            size={16} 
+                            style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
+                          />
+                        </div>
+
+                        <button 
+                          type="submit" 
+                          className="btn btn-primary" 
+                          style={{ width: '100%', backgroundColor: '#ef4d23', color: '#ffffff', fontWeight: '700', fontSize: '14px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                        >
+                          Next: Proceed to Pay <ChevronRight size={16} />
+                        </button>
+                      </form>
+                    </>
+                  )}
+
+                  {subscribeStep === 'payment' && (
+                    <>
+                      {/* Step 2 Header */}
+                      <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+                        <span className="badge badge-accent" style={{ marginBottom: '0.5rem' }}>
+                          Step 2 of 2: Pay & Scan
+                        </span>
+                        <h1 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: '0.25rem', color: '#111827' }}>
+                          Complete Payment
+                        </h1>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          Scan the QR code to pay using any UPI application
+                        </p>
+                      </div>
+
+                      {loginError && (
+                        <div style={{
+                          padding: '0.75rem',
+                          backgroundColor: 'var(--danger-light)',
+                          color: 'var(--danger)',
+                          borderRadius: '6px',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          marginBottom: '1rem',
+                          textAlign: 'center'
+                        }}>
+                          {loginError}
+                        </div>
+                      )}
+
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        backgroundColor: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        padding: '1.25rem',
+                        marginBottom: '1.25rem',
+                        textAlign: 'center'
+                      }}>
+                        {/* Plan Summary */}
+                        <div style={{ fontSize: '13px', color: '#475569', marginBottom: '0.75rem' }}>
+                          Subscription Plan: <strong>{selectedPlan?.name} ({selectedPlan?.price})</strong>
+                        </div>
+
+                        {/* UPI QR Code Container */}
+                        <div style={{
+                          backgroundColor: '#ffffff',
+                          padding: '10px',
+                          borderRadius: '10px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                          border: '1px solid #e2e8f0',
+                          marginBottom: '0.75rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                              `upi://pay?pa=9354384835-3@ybl&pn=EduNest&am=${selectedPlan?.price.replace(/[^0-9]/g, '') || '999'}&cu=INR&tn=EduNest%20Subscription`
+                            )}`}
+                            alt="UPI Scanner QR Code"
+                            style={{ width: '180px', height: '180px', display: 'block' }}
+                          />
+                        </div>
+
+                        {/* UPI Details */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                          <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>
+                            Direct UPI Address
+                          </span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <code style={{ fontSize: '13px', color: '#0f172a', fontWeight: '700', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>
+                              9354384835-3@ybl
+                            </code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText('9354384835-3@ybl');
+                                setCopied(true);
+                                setTimeout(() => setCopied(false), 2000);
+                              }}
+                              style={{
+                                border: 'none',
+                                background: '#334155',
+                                color: '#ffffff',
+                                fontSize: '11px',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontWeight: '600'
+                              }}
+                            >
+                              {copied ? 'Copied!' : 'Copy ID'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <form onSubmit={handlePaymentSubmit}>
+                        <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+                          <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>UPI Ref / UTR Number (12 digits)</label>
+                          <input
+                            type="text"
+                            maxLength="12"
+                            pattern="\d{12}"
+                            className="form-control"
+                            style={{ backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
+                            placeholder="Enter 12-digit transaction ID"
+                            value={transactionId}
+                            onChange={(e) => setTransactionId(e.target.value.replace(/\D/g, ''))}
+                            required
+                          />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setSubscribeStep('account')}
+                            style={{ flex: 1, fontWeight: '700', fontSize: '14px', borderRadius: '10px' }}
+                          >
+                            Back
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-primary"
+                            style={{ flex: 2, backgroundColor: '#ef4d23', color: '#ffffff', fontWeight: '700', fontSize: '14px', borderRadius: '10px' }}
+                            disabled={submitting}
+                          >
+                            Verify & Register
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  )}
+
+                  {subscribeStep === 'verifying' && (
+                    <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                      <div className="payment-spinner" style={{
+                        width: '50px',
+                        height: '50px',
+                        border: '5px solid #e2e8f0',
+                        borderTopColor: '#ef4d23',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite',
+                        margin: '0 auto 1.5rem auto'
+                      }} />
+                      <h2 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: '#0f172a', marginBottom: '0.5rem' }}>
+                        Verifying Payment
+                      </h2>
+                      <p style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: '1.4' }}>
+                        Processing your transaction and initializing your tuition admin panel. Please do not close this modal.
+                      </p>
                     </div>
                   )}
 
-                  <form onSubmit={handleSubscribeSubmit}>
-                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
-                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Full Name / Academy Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        style={{ backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
-                        placeholder="e.g. Apex Tuition Center"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
+                  {subscribeStep === 'success' && (
+                    <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                      <div style={{
+                        width: '64px',
+                        height: '64px',
+                        borderRadius: '50%',
+                        backgroundColor: '#dcfce7',
+                        color: '#15803d',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '32px',
+                        margin: '0 auto 1.5rem auto'
+                      }}>
+                        ✓
+                      </div>
+                      <h2 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', color: '#111827', marginBottom: '0.5rem' }}>
+                        Payment Successful!
+                      </h2>
+                      <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '1rem', lineHeight: '1.4' }}>
+                        Welcome to <strong>EduNest Premium</strong>! Your credentials are now active.
+                      </p>
+                      <div style={{
+                        fontSize: '0.8rem',
+                        backgroundColor: '#f1f5f9',
+                        padding: '10px',
+                        borderRadius: '8px',
+                        color: '#475569',
+                        display: 'inline-block'
+                      }}>
+                        Username: <strong>{mobileNumber}</strong>
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1.5rem' }}>
+                        Redirecting to dashboard console...
+                      </p>
                     </div>
-
-                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
-                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Owner Email Address</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
-                        placeholder="e.g. owner@gmail.com"
-                        value={emailAddress}
-                        onChange={(e) => setEmailAddress(e.target.value)}
-                        required
-                      />
-                      <Mail 
-                        size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
-                      />
-                    </div>
-
-                    <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }}>
-                      <label className="form-label" style={{ color: '#334155', fontWeight: '700', fontSize: '13px', display: 'block', marginBottom: '6px' }}>Choose Security Password</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        style={{ paddingLeft: '2.5rem', backgroundColor: '#ffffff', border: '1.5px solid #cbd5e1', color: '#0f172a', fontWeight: '600' }}
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                      <Lock 
-                        size={16} 
-                        style={{ position: 'absolute', left: '1rem', bottom: '0.85rem', color: '#64748b' }} 
-                      />
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="btn btn-primary" 
-                      style={{ width: '100%', marginTop: '1.25rem', backgroundColor: '#ef4d23', color: '#ffffff', fontWeight: '700', fontSize: '14px', borderRadius: '10px' }}
-                      disabled={submitting}
-                    >
-                      {submitting ? 'Processing Payment...' : `Subscribe - ${selectedPlan?.price || 'Get Access'}`}
-                    </button>
-                  </form>
+                  )}
                 </>
               )}
             </div>
